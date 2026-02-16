@@ -1,0 +1,97 @@
+####################################
+# OS FILES
+####################################
+.DS_Store
+Thumbs.db
+desktop.ini
+
+####################################
+# NODE MODULES
+####################################
+node_modules/
+**/node_modules/
+
+####################################
+# LOG FILES
+####################################
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+####################################
+# ENV FILES (VERY IMPORTANT)
+####################################
+.env
+.env.*
+!.env.example
+
+####################################
+# NEXT.JS (pmegp-portal)
+####################################
+.pnext
+.next/
+out/
+build/
+dist/
+.cache/
+.next/cache
+.next/static
+
+####################################
+# EXPRESS / BACKEND
+####################################
+uploads/
+tmp/
+temp/
+
+####################################
+# DATABASE FILES
+####################################
+*.sql
+*.sqlite
+*.sqlite3
+*.db
+*.db-journal
+
+# specifically your dump
+organization_db.sql
+
+####################################
+# TEST / COVERAGE
+####################################
+coverage/
+.nyc_output/
+
+####################################
+# IDE / EDITOR FILES
+####################################
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+
+####################################
+# TYPESCRIPT
+####################################
+*.tsbuildinfo
+
+####################################
+# BUILD OUTPUTS
+####################################
+dist/
+build/
+out/
+
+####################################
+# MISC
+####################################
+*.pem
+*.key
+*.crt
