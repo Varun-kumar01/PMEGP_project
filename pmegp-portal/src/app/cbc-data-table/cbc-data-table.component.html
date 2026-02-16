@@ -1,0 +1,112 @@
+<mat-toolbar color="primary" class="navbar">
+  <span class="navbar-title">CBC TOTAL RECOVERY DATA</span>
+  
+</mat-toolbar>
+
+
+<div *ngIf="isLoading" style="text-align:center; padding:15px; font-weight:600;">
+  Loading data...
+</div>
+
+
+<div *ngIf="errorMessage" style="text-align:center; padding:15px; font-weight:600; color:red;">
+  {{ errorMessage }}
+</div>
+
+
+<div *ngIf="!isLoading" style="padding: 15px; background-color: #f5f5f5; margin-bottom: 15px; border-radius: 4px;">
+  <div style="display: flex; gap: 15px; align-items: center;">
+    <mat-form-field appearance="outline" style="width: 300px;">
+      <mat-label>Select District</mat-label>
+      <mat-select [(ngModel)]="selectedDistrict" (selectionChange)="onDistrictFilter()">
+        <mat-option value="">All Districts</mat-option>
+        <mat-option *ngFor="let district of districts" [value]="district.name">
+          {{ district.name }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+    <button mat-raised-button color="primary" (click)="onDistrictFilter()">
+      Filter
+    </button>
+  </div>
+</div>
+
+
+<div *ngIf="!isLoading" style="overflow-x: auto;">
+  <table *ngIf="!isLoading"
+         border="1"
+         style="border-collapse: collapse; width: 100%; text-align:center; font-size:14px;">
+    
+    <thead>
+      <tr>
+        <th rowspan="2">Sl. No</th>
+        <th rowspan="2">Name & Address of the borrower</th>
+        <th rowspan="2">Village</th>
+        <th rowspan="2">Mandal</th>
+        <th rowspan="2">District</th>
+        <th rowspan="2">Year of Sanction / Sanction date</th>
+        <th rowspan="2">Industry</th>
+        <th rowspan="2">P.R. No.</th>
+
+        <th colspan="3">Sanctioned</th>
+        <th colspan="4">Recovery</th>
+        <th colspan="3">Balance to be recovered</th>
+      </tr>
+
+      <tr>
+        <th>T.L.</th>
+        <th>M.M</th>
+        <th>Total</th>
+
+        <th>T.L.</th>
+        <th>N.I</th>
+        <th>P.I</th>
+        <th>M.M</th>
+        <th>Total</th>
+
+        <th>T.L.</th>
+        <th>N.I</th>
+        <th>Total</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <tr *ngIf="!tableRows || tableRows.length === 0">
+        <td colspan="22" style="padding: 15px; font-weight: 600;">No Data Available</td>
+      </tr>
+      <tr *ngFor="let row of displayedRows; let i = index">
+        <td>{{ (pageIndex * pageSize) + i + 1 }}</td>
+        <td>{{ row.name_and_address_borrower }}</td>
+        <td>{{ row.village }}</td>
+        <td>{{ row.mandal }}</td>
+        <td>{{ row.district }}</td>
+        <td>{{ row.year_of_sanction }}</td>
+        <td>{{ row.industry }}</td>
+        <td>{{ row.pr_no }}</td>
+
+        <td>{{ row.sanctioned_tl }}</td>
+        <td>{{ row.sanctioned_mm }}</td>
+        <td>{{ row.sanctioned_total }}</td>
+
+        <td>{{ row.recovery_tl }}</td>
+        <td>{{ row.recovery_ni }}</td>
+        <td>{{ row.recovery_pi }}</td>
+        <td>{{ row.recovery_mm }}</td>
+        <td>{{ row.recovery_total }}</td>
+
+        <td>{{ row.balance_tl }}</td>
+        <td>{{ row.balance_ni }}</td>
+        <td>{{ row.balance_total }}</td>
+      </tr>
+    </tbody>
+  </table>
+
+
+  <mat-paginator
+    [length]="filteredRows.length"
+    [pageSize]="pageSize"
+    [pageSizeOptions]="[5, 10, 25, 50]"
+    aria-label="Select page"
+    (page)="onPageChange($event)">
+  </mat-paginator>
+</div>

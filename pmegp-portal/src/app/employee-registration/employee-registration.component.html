@@ -1,0 +1,96 @@
+<div class="registration-container">
+  <div class="registration-header">
+    <h1>📝 Employee Registration</h1>
+    <p>Create Your Account</p>
+  </div>
+
+  <div class="registration-form-container">
+    <form class="registration-form" (ngSubmit)="onSubmit()" #registrationForm="ngForm">
+
+      <div class="form-group">
+        <label for="username">Username *</label>
+        <input 
+          type="text" 
+          id="username" 
+          name="username" 
+          [(ngModel)]="registrationData.username"
+          required 
+          class="form-control"
+          placeholder="Choose a username "
+          minlength="3">
+      </div>
+
+      <div class="form-group">
+        <label for="password">Password *</label>
+        <div class="password-input-wrapper">
+          <input 
+            [type]="showPassword ? 'text' : 'password'" 
+            id="password" 
+            name="password" 
+            [(ngModel)]="registrationData.password"
+            required 
+            class="form-control"
+            placeholder="Create a password "
+            minlength="6">
+          <button 
+            type="button" 
+            class="toggle-password-btn"
+            (click)="togglePasswordVisibility()"
+            tabindex="-1">
+            <span *ngIf="!showPassword">👁️</span>
+            <span *ngIf="showPassword">👁️‍🗨️</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="confirmPassword">Confirm Password *</label>
+        <div class="password-input-wrapper">
+          <input 
+            [type]="showConfirmPassword ? 'text' : 'password'" 
+            id="confirmPassword" 
+            name="confirmPassword" 
+            [(ngModel)]="registrationData.confirmPassword"
+            required 
+            class="form-control"
+            placeholder="Confirm your password"
+            minlength="6">
+          <button 
+            type="button" 
+            class="toggle-password-btn"
+            (click)="toggleConfirmPasswordVisibility()"
+            tabindex="-1">
+            <span *ngIf="!showConfirmPassword">👁️</span>
+            <span *ngIf="showConfirmPassword">👁️‍🗨️</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <button type="submit" class="register-btn" [disabled]="!registrationForm.form.valid || isLoading">
+          <span *ngIf="!isLoading">Register</span>
+          <span *ngIf="isLoading">Creating Account...</span>
+        </button>
+        <button type="button" class="reset-btn" (click)="resetForm()">
+          Clear
+        </button>
+      </div>
+
+      <div class="error-message" *ngIf="errorMessage">
+        <span>❌ {{ errorMessage }}</span>
+      </div>
+
+      <div class="success-message" *ngIf="successMessage">
+        <span>✓ {{ successMessage }}</span>
+      </div>
+
+      <div class="form-footer">
+        <p>Already have an account? <a href="#" (click)="onBackToLogin()">Login here</a></p>
+      </div>
+    </form>
+  </div>
+
+  <div class="back-to-dashboard">
+    <button class="back-btn" routerLink="/dashboard">← Back to Dashboard</button>
+  </div>
+</div>

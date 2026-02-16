@@ -1,0 +1,39 @@
+<div class="projects-container">
+
+  <h2>PMEGP Project Library</h2>
+
+  <div *ngIf="loading" class="loading">
+    Loading projects...
+  </div>
+
+  <table *ngIf="!loading && projects.length > 0" class="projects-table">
+
+    <thead>
+      <tr>
+        <th>Sr No</th>
+        <th>Project Name</th>
+        <th>Project Cost</th>
+        <th>View</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <tr *ngFor="let project of projects; let i = index">
+        <td>{{ i + 1 }}</td>
+        <td>{{ project.title }}</td>
+        <td>₹ {{ project.cost | number }}</td>
+        <td>
+          <button class="view-btn" (click)="viewProject(project.file_name)">
+            View
+          </button>
+        </td>
+      </tr>
+    </tbody>
+
+  </table>
+
+  <div *ngIf="!loading && projects.length === 0" class="no-data">
+    No projects uploaded yet.
+  </div>
+
+</div>

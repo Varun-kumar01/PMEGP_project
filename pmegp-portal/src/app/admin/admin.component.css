@@ -1,0 +1,92 @@
+
+.file-upload-card {
+  max-width: 600px;
+  margin: 2rem auto;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+
+.agency-upload-card {
+  margin-top: 2.5rem; 
+  border-top: 2px solid #f0f0f0; 
+  padding-top: 1rem;
+}
+
+
+.visually-hidden {
+  display: none;
+}
+
+
+.file-name {
+  margin-left: 1rem;
+  font-style: italic;
+  color: #555;
+  font-size: 0.9rem;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+
+.upload-actions {
+  display: flex;
+  justify-content: flex-end;
+  padding: 0 16px 12px;
+}
+
+
+.uploading-spinner {
+  display: flex;
+  align-items: center;
+  gap: 8px; 
+}
+
+
+.upload-message {
+  padding: 12px 16px;
+  margin: 8px 16px 16px;
+  border-radius: 4px;
+  font-weight: 500;
+  font-size: 0.95rem;
+  text-align: left; 
+}
+
+
+.upload-message.success {
+  background-color: #e8f5e9;
+  color: #2e7d32;
+  border: 1px solid #c8e6c9;
+}
+
+.upload-message.error {
+  background-color: #ffebee;
+  color: #c62828;
+  border: 1px solid #ffcdd2;
+}
+
+
+.upload-message.info {
+  background-color: #e3f2fd;
+  color: #1565c0;
+  border: 1px solid #bbdefb;
+}
+
+
+mat-card-header {
+  margin-bottom: 12px;
+}
+
+mat-card-title {
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+mat-card-subtitle {
+  color: #666;
+}
+
+
+button[mat-stroked-button] {
+  margin-top: 8px;
+}
+

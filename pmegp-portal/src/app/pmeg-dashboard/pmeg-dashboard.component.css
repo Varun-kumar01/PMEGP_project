@@ -1,0 +1,101 @@
+
+.table-container {
+  width: 100%;
+  overflow-x: auto;
+  overflow-y: visible;
+  border: 1px solid #ccc;
+  background: #fff;
+}
+
+
+table {
+  width: max-content; 
+  border-collapse: collapse;
+  font-family: Arial, sans-serif;
+  font-size: 13px;
+}
+
+th, td {
+  border: 1px solid #ccc;
+  padding: 10px 8px;
+  white-space: nowrap;
+  background: #fff;
+  text-align: center;
+}
+
+thead tr:nth-child(1) th {
+  position: sticky;
+  top: 0;
+  background: #f4f4f4;
+  font-weight: bold;
+
+  z-index: 90;
+}
+
+
+thead tr:nth-child(2) th {
+  position: sticky;
+
+  top: 40px;
+
+  background: #f4f4f4;
+  font-weight: bold;
+
+
+  z-index: 80;
+}
+
+.sticky-col {
+  position: sticky;
+  background: #ffffff;
+}
+
+
+.sticky-col-1 {
+  left: 0;
+
+  width: 80px;
+  min-width: 80px;
+  max-width: 80px;
+  z-index: 200 !important;
+}
+
+
+.sticky-col-2 {
+  left: 80px;  
+
+  width: 180px;
+  min-width: 180px;
+  max-width: 180px;
+
+
+  z-index: 200 !important;
+}
+
+
+thead .sticky-col-1,
+thead .sticky-col-2 {
+  z-index: 250 !important;
+  background: #fff;
+}
+
+
+
+.table-container a {
+  color: blue;
+  text-decoration: underline;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.table-container a:hover {
+  background-color: #eef;
+}
+
+
+.no-data {
+  text-align: center;
+  padding: 20px;
+  font-style: italic;
+  color: #666;
+}
