@@ -1,0 +1,175 @@
+/* --- Global Styles --- */
+.pmegp-portal {
+  font-family: 'Arial', sans-serif;
+  background-color: #f5f5f5;
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
+}
+
+/* --- Header Section --- */
+.header-section {
+  background: #F0F8FF;
+  padding: 20px 0 40px;
+  text-align: center;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  position: relative;
+}
+
+.telangana-logo img {
+  width: 150px;
+  height: auto;
+  display: block;
+  margin: 0 auto;
+}
+
+.portal-title h2,
+.portal-title h3 {
+  font-family: 'Georgia', serif;
+  font-size: 2.5rem;
+  font-weight: bold;
+  color: #7B1E23;
+  text-shadow: 2px 2px 0 #f8cb95, 3px 3px 3px rgba(0, 0, 0, 0.3);
+  margin: 0 0 10px 0;
+}
+
+.leader-photo { position: absolute; left: 20px; top: 15px; width: 160px; text-align: center; }
+.leader-photo img { width: 135px; height: 135px; border-radius: 50%; object-fit: cover; border: 3px solid white; box-shadow: 0 2px 6px rgba(0,0,0,0.3); }
+.leader-text { margin-top: 5px; color: #7B1E23; font-weight: 600; font-size: 0.85rem; }
+
+.minister-photo { position: absolute; right: 20px; top: 15px; width: 180px; text-align: center; }
+.minister-photo img { width: 135px; height: 135px; border-radius: 50%; object-fit: cover; border: 3px solid white; box-shadow: 0 2px 8px rgba(0,0,0,0.3); }
+.minister-text { margin-top: 5px; color: #7B1E23; font-weight: 600; font-size: 0.85rem; }
+
+/* --- REDESIGNED HERO CAROUSEL --- */
+.hero-carousel {
+  width: 100%;
+  background: #fff;
+  padding: 20px 0; /* Added spacing to make it stand out */
+  position: relative;
+}
+
+.carousel-viewport {
+  width: 100%;
+  overflow: hidden;
+  border-top: 5px solid #7B1E23;
+  border-bottom: 5px solid #7B1E23;
+  background: #000; /* Dark background for better contrast if images vary */
+}
+
+.carousel-track {
+  display: flex;
+  width: calc(700px * 8); /* Width based on slide size * total items */
+  animation: scrollHero 40s linear infinite;
+}
+
+.carousel-slide {
+  width: 700px; /* Wider images for better visual impact */
+  height: 400px; /* Taller height as requested */
+  flex-shrink: 0;
+}
+
+.carousel-slide img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-right: 2px solid #fff;
+}
+
+/* Pause animation on hover */
+.hero-carousel:hover .carousel-track {
+  animation-play-state: paused;
+}
+
+.carousel-accent-bar {
+  height: 10px;
+  background: linear-gradient(90deg, #7B1E23, #f8cb95, #7B1E23);
+  width: 100%;
+}
+
+@keyframes scrollHero {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(calc(-700px * 4)); } /* Move by 4 slides (the unique set) */
+}
+
+/* --- Main Content Layout --- */
+.main-content {
+  display: flex;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 40px 20px;
+  gap: 30px;
+}
+
+.left-panel { flex: 0 0 300px; background: #F0F8FF; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); padding: 25px; height: fit-content; }
+.left-panel h3 { color: #1e3c72; font-size: 1.5rem; margin-bottom: 15px; padding-bottom: 10px; border-bottom: 3px solid #1e3c72; }
+
+.portal-links { display: flex; flex-direction: column; gap: 8px; }
+.link-item { display: flex; align-items: center; gap: 15px; padding: 12px; border-radius: 8px; transition: all 0.3s ease; }
+.link-item:hover { background: #9e2a2b; transform: translateX(8px); }
+.link-item a { color: #333; text-decoration: none; font-weight: 600; }
+.link-item:hover a { color: white; }
+
+.portal-links .icon { width: 24px; height: 24px; flex-shrink: 0; }
+.portal-links .icon img { width: 100%; height: 100%; object-fit: contain; }
+
+/* --- Right Content Wrapper --- */
+.right-content-wrapper { flex: 1; display: flex; flex-direction: column; gap: 40px; }
+
+.info-cards-section { display: flex; gap: 25px; }
+.info-card { flex: 1; border-radius: 20px; padding: 35px; position: relative; overflow: hidden; min-height: 260px; box-shadow: 0 8px 20px rgba(0,0,0,0.08); transition: transform 0.3s ease; }
+.info-card:hover { transform: translateY(-8px); }
+
+.card-peach { background: linear-gradient(135deg, #fffcf9 0%, #ffeacc 100%); }
+.card-purple { background: linear-gradient(135deg, #f8f7ff 0%, #e4dff5 100%); }
+
+.card-label { background: #7B1E23; color: white; padding: 5px 12px; border-radius: 4px; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; margin-bottom: 15px; display: inline-block; }
+.info-card h2 { color: #333; margin-bottom: 20px; font-size: 1.6rem; }
+
+.card-list { list-style: none; padding: 0; }
+.card-list li { font-size: 1rem; margin-bottom: 12px; padding-left: 20px; position: relative; color: #444; }
+.card-list li::before { content: '✔'; position: absolute; left: 0; color: #7B1E23; font-weight: bold; }
+
+/* --- Login Panels --- */
+.right-panel { background: #F0F8FF; border-radius: 12px; padding: 30px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+.login-section { margin-bottom: 40px; }
+.login-section:last-child { margin-bottom: 0; }
+.login-section h3 { color: #1e3c72; text-align: center; border-bottom: 3px solid #1e3c72; padding-bottom: 10px; margin-bottom: 30px; font-size: 1.4rem; }
+
+.login-grids-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 25px; }
+.login-grid { background: #fff; border: 1px solid #dee2e6; border-radius: 12px; padding: 30px 20px; text-align: center; transition: all 0.3s ease; box-shadow: 0 4px 6px rgba(0,0,0,0.02); }
+.login-grid:hover { border-color: #9e2a2b; transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
+
+.grid-icon { font-size: 2.5rem; margin-bottom: 15px; }
+.grid-content h4 { color: #7B1E23; margin-bottom: 8px; font-size: 1.1rem; }
+.grid-content p { font-size: 0.85rem; color: #666; margin-bottom: 15px; }
+
+.login-btn { background: #9e2a2b; color: white; border: none; padding: 10px 30px; border-radius: 25px; cursor: pointer; font-weight: 600; transition: background 0.3s; }
+.login-btn:hover { background: #7B1E23; }
+
+/* --- Footer --- */
+.footer-section { background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%); color: white; padding: 60px 20px 0; margin-top: 60px; }
+.footer-content { display: grid; grid-template-columns: repeat(3, 1fr); gap: 40px; max-width: 1400px; margin: 0 auto 40px; }
+.footer-column h4 { color: #f8cb95; margin-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.2); padding-bottom: 10px; }
+.footer-column p { line-height: 1.6; color: #e0e0e0; }
+.footer-column a { color: #f8cb95; text-decoration: none; }
+.footer-bottom { background: rgba(0,0,0,0.3); padding: 25px; text-align: center; border-top: 1px solid rgba(255,255,255,0.1); font-size: 0.9rem; }
+
+/* --- Responsive Design --- */
+@media (max-width: 1024px) {
+  .login-grids-row { grid-template-columns: 1fr 1fr; }
+  .carousel-slide { width: 500px; height: 350px; }
+}
+
+@media (max-width: 768px) {
+  .leader-photo, .minister-photo { display: none; }
+  .main-content { flex-direction: column; }
+  .info-cards-section { flex-direction: column; }
+  .login-grids-row { grid-template-columns: 1fr; }
+  .footer-content { grid-template-columns: 1fr; }
+  
+  .carousel-slide { width: 100vw; height: 250px; }
+  @keyframes scrollHero {
+    100% { transform: translateX(calc(-100vw * 4)); }
+  }
+}

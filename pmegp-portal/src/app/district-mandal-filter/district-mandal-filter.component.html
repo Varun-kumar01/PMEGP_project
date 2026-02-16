@@ -1,0 +1,360 @@
+<mat-toolbar color="primary" class="navbar">
+  <span class="navbar-title">PMEGP Physical Verification System</span>
+  <span class="spacer"></span>
+  <button mat-raised-button color="accent" routerLink="/cbc-data-verification">
+    <!-- <mat-icon>table_chart</mat-icon> --> CBC Recovery Data Verification
+  </button>
+</mat-toolbar>
+
+<div class="main-container">
+
+  <mat-card class="filter-card">
+    <mat-card-header>
+      <mat-card-title>Physical Verification Filter</mat-card-title>
+      <mat-card-subtitle>Select location to load data</mat-card-subtitle>
+    </mat-card-header>
+
+    <mat-card-content class="filter-content">
+      <div class="filter-controls">
+        
+        <mat-form-field appearance="outline">
+          <mat-label>Select District</mat-label>
+          <mat-select (selectionChange)="onDistrictSelect($event)">
+            <mat-option *ngFor="let d of districts" [value]="d.id">
+              {{ d.name }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <!-- <mat-form-field appearance="outline">
+          <mat-label>Select Mandal</mat-label>
+          <mat-select [(ngModel)]="selectedMandal">
+            <mat-option *ngFor="let m of mandals" [value]="m.name">
+              {{ m.name }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field> -->
+
+        <mat-form-field appearance="outline">
+          <mat-label>Search Mandal</mat-label>
+          <input
+            matInput
+            [(ngModel)]="selectedMandal"
+            (input)="onMandalSearch()"
+            placeholder="Type mandal name"
+          />
+        </mat-form-field>
+
+        <!-- <button mat-raised-button color="primary" class="load-btn" (click)="fetchData()">
+          <mat-icon>search</mat-icon> Load Data 
+        </button> -->
+
+      </div>
+    </mat-card-content>
+  </mat-card>
+
+
+  <div class="table-container mat-elevation-z8" *ngIf="results.length > 0">
+    
+    <table mat-table [dataSource]="results">
+
+      <ng-container matColumnDef="sl_no">
+        <th mat-header-cell *matHeaderCellDef> Sl. No </th>
+        <td mat-cell *matCellDef="let row; let i = index"> {{ i + 1 }} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="applicant_name">
+        <th mat-header-cell *matHeaderCellDef> Applicant Name </th>
+        <td mat-cell *matCellDef="let row"> 
+          <span class="text-bold">{{ row.applicant_name }}</span>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="village">
+        <th mat-header-cell *matHeaderCellDef> Village </th>
+        <td mat-cell *matCellDef="let row"> {{ row.village }} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="applicant_id">
+        <th mat-header-cell *matHeaderCellDef> Applicant ID </th>
+        <td mat-cell *matCellDef="let row"> {{ row.applicant_id }} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="product_desc">
+        <th mat-header-cell *matHeaderCellDef> Activity/Product </th>
+        <td mat-cell *matCellDef="let row"> {{ row.product_desc_activity }} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="unit_address">
+        <th mat-header-cell *matHeaderCellDef> Unit Address </th>
+        <td mat-cell *matCellDef="let row"> {{ row.unit_address }} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="unit_working">
+        <th mat-header-cell *matHeaderCellDef> Unit Working </th>
+        <td mat-cell *matCellDef="let row">
+          <div class="btn-group-toggle">
+            <button mat-flat-button 
+                    [color]="rowVerificationStatus.get(row.applicant_id)?.working_status === 'YES' ? 'primary' : ''"
+                    class="status-btn"
+                    (click)="openModal(row, 'working')">Yes</button>
+            <button mat-stroked-button color="warn" 
+                    [class.active-no]="rowVerificationStatus.get(row.applicant_id)?.working_status === 'NO'"
+                    class="status-btn"
+                    (click)="sendNoStatus(row, 'working')">No</button>
+          </div>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="unit_not_working">
+        <th mat-header-cell *matHeaderCellDef> Not Working </th>
+        <td mat-cell *matCellDef="let row">
+          <div class="btn-group-toggle">
+            <button mat-flat-button 
+                    [color]="rowVerificationStatus.get(row.applicant_id)?.not_working_status === 'YES' ? 'primary' : ''"
+                    class="status-btn"
+                    (click)="openModal(row, 'notWorking')">Yes</button>
+            <button mat-stroked-button color="warn"
+                    [class.active-no]="rowVerificationStatus.get(row.applicant_id)?.not_working_status === 'NO'"
+                    class="status-btn" 
+                    (click)="sendNoStatus(row, 'notWorking')">No</button>
+          </div>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="unit_shifted">
+        <th mat-header-cell *matHeaderCellDef> Unit Shifted </th>
+        <td mat-cell *matCellDef="let row">
+          <div class="btn-group-toggle">
+            <button mat-flat-button 
+                    [color]="rowVerificationStatus.get(row.applicant_id)?.shifted_status === 'YES' ? 'primary' : ''"
+                    class="status-btn"
+                    (click)="openModal(row, 'shifted')">Yes</button>
+            <button mat-stroked-button color="warn" 
+                    [class.active-no]="rowVerificationStatus.get(row.applicant_id)?.shifted_status === 'NO'"
+                    class="status-btn"
+                    (click)="sendNoStatus(row, 'shifted')">No</button>
+          </div>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef> Action </th>
+        <td mat-cell *matCellDef="let row">
+          <button mat-raised-button color="accent" (click)="submitRowVerification(row)">
+            Submit
+          </button>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;" class="hover-row"></tr>
+    </table>
+  </div>
+
+  <div *ngIf="results.length === 0" class="empty-state">
+    <mat-icon class="large-icon">search</mat-icon>
+    <p>Please select a District and Mandal to view data.</p>
+  </div>
+
+</div>
+
+<div class="modal-overlay" *ngIf="isModalOpen">
+
+  <mat-card class="modal-card mat-elevation-z16">
+
+    <div class="modal-header">
+      <h2 class="modal-title">
+        {{ verificationType === 'working' ? 'Unit Working Details' :
+           verificationType === 'notWorking' ? 'Unit Not Working Declaration' :
+           'Unit Shifted Details' }}
+      </h2>
+
+      <button mat-icon-button (click)="closeModal()" style="color:white;">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+
+    <mat-divider></mat-divider>
+
+    <mat-card-content class="modal-body">
+
+      <div class="applicant-summary">
+        <strong>Applicant:</strong> {{ currentApplicant.applicant_name }}<br>
+        <strong>ID:</strong> {{ currentApplicant.applicant_id }}
+      </div>
+
+      <!-- ================= WORKING FORM ================= -->
+
+      <form *ngIf="verificationType === 'working'"
+            #workingForm="ngForm"
+            (ngSubmit)="workingForm.valid && submitWorkingForm()"
+            class="material-form">
+
+        <div class="row-2-col">
+
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>1. Sector</mat-label>
+            <input matInput [(ngModel)]="workingFormData.unitSector"
+                   name="unitSector" required>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>2. Unit Name</mat-label>
+            <input matInput [(ngModel)]="workingFormData.unitName"
+                   name="unitName" required>
+          </mat-form-field>
+
+        </div>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>3. Products & Cost</mat-label>
+          <textarea matInput rows="2"
+                    [(ngModel)]="workingFormData.productsCost"
+                    name="productsCost" required></textarea>
+        </mat-form-field>
+
+        <div class="radio-section">
+          <label>4. Marketing Strategy:</label>
+          <mat-radio-group [(ngModel)]="workingFormData.marketing"
+                           name="marketing" required>
+            <mat-radio-button value="Local">Local</mat-radio-button>
+            <mat-radio-button value="OtherDistricts">Other Districts</mat-radio-button>
+            <mat-radio-button value="Export">Export</mat-radio-button>
+          </mat-radio-group>
+        </div>
+
+        <!-- ===== NUMERIC FIELDS ===== -->
+
+        <div class="row-2-col">
+
+          <!-- Employees -->
+          <mat-form-field appearance="outline">
+            <mat-label>5. Employees</mat-label>
+
+            <input matInput type="text"
+                   [(ngModel)]="workingFormData.employees"
+                   name="employees"
+                   required
+                   pattern="^[0-9]+$"
+                   #emp="ngModel">
+
+            <mat-error *ngIf="emp.invalid && emp.touched">
+              Whole number ≥ 0 required
+            </mat-error>
+          </mat-form-field>
+
+          <!-- Production -->
+          <mat-form-field appearance="outline">
+            <mat-label>6. Production (Annual)</mat-label>
+
+            <input matInput type="text"
+                   [(ngModel)]="workingFormData.annualProduction"
+                   name="annualProduction"
+                   required
+                   pattern="^[0-9]+$"
+                   #prod="ngModel">
+
+            <mat-error *ngIf="prod.invalid && prod.touched">
+              Whole number ≥ 0 required
+            </mat-error>
+          </mat-form-field>
+
+        </div>
+
+        <div class="row-2-col">
+
+          <!-- Value -->
+          <mat-form-field appearance="outline">
+            <mat-label>7. Production Value</mat-label>
+
+            <input matInput type="text"
+                   [(ngModel)]="workingFormData.productionValue"
+                   name="productionValue"
+                   required
+                   pattern="^[0-9]+$"
+                   #val="ngModel">
+
+            <mat-error *ngIf="val.invalid && val.touched">
+              Whole number ≥ 0 required
+            </mat-error>
+          </mat-form-field>
+
+          <!-- Turnover -->
+          <mat-form-field appearance="outline">
+            <mat-label>8. Turnover</mat-label>
+
+            <input matInput type="text"
+                   [(ngModel)]="workingFormData.annualTurnover"
+                   name="annualTurnover"
+                   required
+                   pattern="^[0-9]+$"
+                   #turn="ngModel">
+
+            <mat-error *ngIf="turn.invalid && turn.touched">
+              Whole number ≥ 0 required
+            </mat-error>
+          </mat-form-field>
+
+        </div>
+
+        <!-- LOCATION + UPLOAD sections remain EXACTLY same -->
+
+        <div class="form-actions">
+          <button mat-button type="button" (click)="closeModal()">Cancel</button>
+
+          <button mat-raised-button
+                  color="primary"
+                  type="submit"
+                  [disabled]="workingForm.invalid">
+            Save Details
+          </button>
+        </div>
+
+      </form>
+
+      <!-- ===== NOT WORKING FORM (unchanged) ===== -->
+      <form *ngIf="verificationType === 'notWorking'"
+            (ngSubmit)="submitNotWorkingForm()"
+            class="material-form">
+
+        <div class="alert-box">
+          <mat-icon color="warn">warning</mat-icon>
+          <span>Unit is non-operational.</span>
+        </div>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <textarea matInput rows="3"
+                    [(ngModel)]="notWorkingFormData.remarks"
+                    name="remarks" required></textarea>
+        </mat-form-field>
+
+        <div class="form-actions">
+          <button mat-button type="button" (click)="closeModal()">Cancel</button>
+          <button mat-raised-button color="warn">Confirm</button>
+        </div>
+
+      </form>
+
+      <!-- ===== SHIFTED FORM (unchanged) ===== -->
+
+      <form *ngIf="verificationType === 'shifted'"
+            (ngSubmit)="submitShiftedForm()"
+            class="material-form">
+
+        <mat-form-field appearance="outline" class="full-width">
+          <textarea matInput rows="3"
+                    [(ngModel)]="shiftedFormData.newAddress"
+                    name="newAddress" required></textarea>
+        </mat-form-field>
+
+        <div class="form-actions">
+          <button mat-button type="button" (click)="closeModal()">Cancel</button>
+          <button mat-raised-button color="primary">Save</button>
+        </div>
+
+      </form>
+
+    </mat-card-content>
+  </mat-card>
+</div>

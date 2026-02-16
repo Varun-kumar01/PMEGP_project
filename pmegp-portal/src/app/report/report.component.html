@@ -1,0 +1,206 @@
+
+<nav class="navbar">
+  <div class="navbar-container">
+    <div class="navbar-brand">
+      <mat-icon class="navbar-icon">assessment</mat-icon>
+      <span class="brand-text">PMEGP Report</span>
+    </div>
+    <div class="navbar-user" routerLink="/cbc-verified-report">
+      <mat-icon class="user-icon">check_circle</mat-icon>
+      <span class="user-text">CBC Verified Data</span>
+    </div>
+  </div>
+</nav>
+
+<div class="report-container">
+
+  <mat-card class="filter-card">
+    <mat-card-header>
+      <mat-card-title>Report Filter</mat-card-title>
+      <mat-card-subtitle>Select District & Mandal then click Load Data</mat-card-subtitle>
+    </mat-card-header>
+
+    <mat-card-content class="filter-content">
+      <div class="filter-controls">
+
+        <mat-form-field appearance="outline">
+          <mat-label>Select District</mat-label>
+          <mat-select (selectionChange)="onDistrictSelect($event)">
+            <mat-option *ngFor="let d of districts" [value]="d.id">{{ d.name }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Search Mandal</mat-label>
+          <input
+            matInput
+            [(ngModel)]="selectedMandal"
+            (input)="onMandalSearch()"
+            placeholder="Type mandal name"
+          />
+        </mat-form-field>
+
+        <!-- <button mat-raised-button color="primary" (click)="loadReport()">
+          <mat-icon>search</mat-icon> Load Data
+        </button> -->
+
+      </div>
+    </mat-card-content>
+  </mat-card>
+
+  <div *ngIf="isLoading" class="loading-container">
+    <div class="spinner"></div>
+    <p>Loading...</p>
+  </div>
+
+  <div *ngIf="!isLoading && reports.length === 0" class="no-data-container">
+    <p>No records. Select district & mandal and click Load Data.</p>
+  </div>
+
+  <div *ngIf="reports.length > 0" class="table-wrapper">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Applicant Name</th>
+          <th>Applicant ID</th>
+          <th>Mandal</th>
+          <th>District</th>
+          <th>Activity / Product</th>
+          <th>Unit Address</th>
+          <th>Unit Working</th>
+          <th>Unit Not Working</th>
+          <th>Unit Shifted</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr *ngFor="let r of reports; let i = index">
+          <td>{{ i + 1 }}</td>
+          <td>{{ r.applicant_name }}</td>
+          <td>{{ r.applicant_id }}</td>
+          <td>{{ r.mandal }}</td>
+          <td>{{ r.district }}</td>
+          <td>{{ r.product_desc_activity }}</td>
+          <td>{{ r.unit_address }}</td>
+          <td>
+            <button *ngIf="r.working_status && r.working_status.toLowerCase() !== 'no'" 
+                    mat-stroked-button color="primary" (click)="openDetailModal(r, 'working')">
+              Working
+            </button>
+          </td>
+
+          <td>
+            <button *ngIf="r.not_working_status && r.not_working_status.toLowerCase() !== 'no'" 
+                    mat-stroked-button color="warn" (click)="openDetailModal(r, 'notWorking')">
+              Not Working
+            </button>
+          </td>
+
+          <td>
+            <button *ngIf="r.shifted_status && r.shifted_status.toLowerCase() !== 'no'" 
+                    mat-stroked-button color="accent" (click)="openDetailModal(r, 'shifted')">
+              Shifted
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="modal-overlay" *ngIf="isModalOpen">
+    <div class="modal-card mat-elevation-z16" role="dialog" aria-modal="true">
+      <div class="modal-header">
+        <h3>{{ modalTitle }}</h3>
+        <button mat-icon-button (click)="closeModal()"><mat-icon>close</mat-icon></button>
+      </div>
+
+      <mat-divider></mat-divider>
+
+      <div class="modal-body">
+        <div *ngIf="modalType === 'working'">
+          <p><strong>Applicant:</strong> {{ selectedRow.applicant_name }} ({{ selectedRow.applicant_id }})</p>
+
+          
+
+          <table class="detail-table">
+            <tr><td><strong>Sector</strong></td><td>{{ selectedRow.unit_sector || '-' }}</td></tr>
+            <tr><td><strong>Unit Name</strong></td><td>{{ selectedRow.unit_name || '-' }}</td></tr>
+            <tr><td><strong>Products & Cost</strong></td><td>{{ selectedRow.products_cost || '-' }}</td></tr>
+            <tr><td><strong>Marketing</strong></td><td>{{ selectedRow.marketing_scope || '-' }}</td></tr>
+            <tr><td><strong>Employees</strong></td><td>{{ selectedRow.employee_count || 0 }}</td></tr>
+            <tr><td><strong>Annual Production Qty</strong></td><td>{{ selectedRow.annual_production_qty || '-' }}</td></tr>
+            <tr><td><strong>Annual Production Value</strong></td><td>{{ selectedRow.annual_production_value || '-' }}</td></tr>
+            <tr><td><strong>Annual Turnover</strong></td><td>{{ selectedRow.annual_turnover || '-' }}</td></tr>
+            <tr><td><strong>Latitude</strong></td><td>{{ selectedRow.working_latitude || '-' }}</td></tr>
+            <tr><td><strong>Longitude</strong></td><td>{{ selectedRow.working_longitude || '-' }}</td></tr>
+          </table>
+
+          <div id="mapContainer" class="map-container"></div>
+
+          <p class="photos-label"><strong>Photos:</strong></p>
+          <div class="photo-grid" *ngIf="getPhotos(selectedRow.working_photos).length > 0">
+            <img *ngFor="let p of getPhotos(selectedRow.working_photos); let idx = index"
+                 [src]="p" class="thumbnail" (click)="openImageViewer(getPhotos(selectedRow.working_photos), idx)" />
+          </div>
+          <div *ngIf="getPhotos(selectedRow.working_photos).length === 0">No photos</div>
+        </div>
+
+        <div *ngIf="modalType === 'notWorking'">
+          <p><strong>Applicant:</strong> {{ selectedRow.applicant_name }} ({{ selectedRow.applicant_id }})</p>
+
+          <table class="detail-table">
+            <tr><td><strong>Latitude</strong></td><td>{{ selectedRow.not_working_latitude || '-' }}</td></tr>
+            <tr><td><strong>Longitude</strong></td><td>{{ selectedRow.not_working_longitude || '-' }}</td></tr>
+            <tr><td><strong>Remarks</strong></td><td>{{ selectedRow.not_working_remarks || 'No remarks' }}</td></tr>
+          </table>
+
+          <div id="mapContainer" class="map-container"></div>
+
+          <p class="photos-label"><strong>Photos:</strong></p>
+          <div class="photo-grid" *ngIf="getPhotos(selectedRow.not_working_photos).length > 0">
+            <img *ngFor="let p of getPhotos(selectedRow.not_working_photos); let idx = index"
+                 [src]="p" class="thumbnail" (click)="openImageViewer(getPhotos(selectedRow.not_working_photos), idx)" />
+          </div>
+          <div *ngIf="getPhotos(selectedRow.not_working_photos).length === 0">No photos</div>
+        </div>
+
+        <div *ngIf="modalType === 'shifted'">
+          <p><strong>Applicant:</strong> {{ selectedRow.applicant_name }} ({{ selectedRow.applicant_id }})</p>
+
+          <table class="detail-table">
+            <tr><td><strong>New Address</strong></td><td>{{ selectedRow.shifted_new_address || 'Not provided' }}</td></tr>
+            <tr><td><strong>Latitude</strong></td><td>{{ selectedRow.shifted_latitude || '-' }}</td></tr>
+            <tr><td><strong>Longitude</strong></td><td>{{ selectedRow.shifted_longitude || '-' }}</td></tr>
+          </table>
+
+          <div id="mapContainer" class="map-container"></div>
+
+          <p class="photos-label"><strong>Photos:</strong></p>
+          <div class="photo-grid" *ngIf="getPhotos(selectedRow.shifted_photos).length > 0">
+            <img *ngFor="let p of getPhotos(selectedRow.shifted_photos); let idx = index"
+                 [src]="p" class="thumbnail" (click)="openImageViewer(getPhotos(selectedRow.shifted_photos), idx)" />
+          </div>
+          <div *ngIf="getPhotos(selectedRow.shifted_photos).length === 0">No photos</div>
+        </div>
+      </div>
+
+      <mat-divider></mat-divider>
+
+      <div class="modal-footer">
+        <button mat-button (click)="closeModal()">Close</button>
+      </div>
+    </div>
+  </div>
+
+
+  <div *ngIf="isViewerOpen" class="image-viewer-overlay" (click)="closeImageViewer($event)">
+    <div class="image-viewer-content">
+      <button class="close-btn" (click)="closeImageViewer()">×</button>
+      <button class="nav-btn left" (click)="prevImage($event)">❮</button>
+      <img [src]="currentImage" class="viewer-image" />
+      <button class="nav-btn right" (click)="nextImage($event)">❯</button>
+    </div>
+  </div>
+
+</div>

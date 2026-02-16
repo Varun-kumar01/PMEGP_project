@@ -1,0 +1,120 @@
+<main class="dashboard-content">
+  <div class="card-container">
+
+
+    <div class="card-title">
+      <h1>KGMV</h1>
+      <h2>Skill Development</h2>
+      <h3>Training Program</h3>
+    </div>
+
+    <section class="centered-card">
+
+ 
+      <div class="card report-card">
+        <div class="card-header">
+          <span class="badge">I</span>
+          <h3>Total Trainings</h3>
+        </div>
+
+        <div class="stats-grid">
+          <div class="stat-item">
+            <label>No. of Batches</label>
+            <span class="value">
+              {{ totalStats?.total_batches || '-' }}
+            </span>
+          </div>
+
+          <div class="stat-item">
+            <label>No. of Trainees</label>
+            <span class="value">
+              {{ totalStats?.total_trainees || '-' }}
+            </span>
+          </div>
+        </div>
+      </div>
+
+
+      <div class="card report-card">
+        <div class="card-header header-with-dropdown">
+          <div class="header-left">
+            <span class="badge">II</span>
+            <h3>Year Wise</h3>
+          </div>
+
+          <select
+            class="year-dropdown"
+            [(ngModel)]="selectedYear"
+            (change)="onYearChange()"
+          >
+            <option [ngValue]="null" disabled>Select Year</option>
+            <option *ngFor="let y of years" [ngValue]="y">
+              {{ y }}
+            </option>
+          </select>
+        </div>
+
+        <table class="report-table">
+          <thead>
+            <tr>
+              <th>Year</th>
+              <th>Total Batches</th>
+              <th>No. of Trainees</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr *ngIf="!yearData">
+              <td colspan="4" class="empty-text">
+                Select a year
+              </td>
+            </tr>
+
+            <tr *ngIf="yearData">
+              <td>{{ yearData.year }}</td>
+              <td>{{ yearData.no_of_batches }}</td>
+              <td>{{ yearData.no_of_trainees }}</td>
+              <td>
+                <button
+                  class="view-btn"
+                  (click)="viewYearDetails(yearData.year)"
+                >
+                  View
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+ 
+      <div class="card report-card">
+        <div class="card-header">
+          <span class="badge">III</span>
+          <h3>Trade Wise</h3>
+        </div>
+
+        <table class="report-table">
+          <thead>
+            <tr>
+              <th>Trade</th>
+              <th>Year</th>
+              <th>No. of Batches</th>
+              <th>No. of Trainees</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr>
+              <td colspan="4" class="empty-text">
+                Coming soon
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+    </section>
+  </div>
+</main>

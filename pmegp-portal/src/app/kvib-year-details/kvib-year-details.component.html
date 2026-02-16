@@ -1,0 +1,47 @@
+<div class="details-container">
+
+  <div class="details-header">
+    <h2>Training Details – {{ year }}</h2>
+
+    <button class="download-btn" (click)="downloadCSV()">
+      ⬇ Download
+    </button>
+  </div>
+
+
+  <table class="details-table">
+    <thead>
+      <tr>
+        <th>Trainee ID</th>
+        <th>Name</th>
+        <th>Batch ID</th>
+        <th>Course Name</th> 
+        <th>Gender</th>
+        <th>Father/ Spouse name</th>
+        <th>Category</th>
+        <th>Address</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <tr *ngFor="let r of rows">
+        <td>{{ r.trainee_id }}</td>
+        <td>{{ r.name }}</td>
+        <td>{{ r.batch_id }}</td>
+        <td>{{ r.course_name }}</td>
+        <td>{{ r.gender }}</td>
+        <td>{{ r.father_spouse_name }}</td>
+        <td>{{ r.category }}</td>
+        <td>{{ r.address }}</td>
+      </tr>
+
+      <tr *ngIf="rows.length === 0">
+        <td colspan="8" class="empty-text">
+          No records found
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+
+</div>

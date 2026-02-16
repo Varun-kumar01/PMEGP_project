@@ -1,0 +1,106 @@
+.projects-container {
+  padding: 30px;
+}
+
+h2 {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.projects-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #fff;
+}
+
+.projects-table th {
+  background: #6a1b9a;
+  color: white;
+  padding: 12px;
+}
+
+.projects-table td {
+  padding: 12px;
+  border-bottom: 1px solid #ddd;
+  text-align: center;
+}
+
+.projects-table tr:hover {
+  background: #f2f2f2;
+}
+
+.view-btn {
+  background: #d35400;
+  color: white;
+  padding: 6px 14px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.view-btn:hover {
+  background: #a84300;
+}
+
+.loading, .no-data {
+  text-align: center;
+  margin-top: 20px;
+  font-size: 18px;
+}
+
+
+/* MOBILE RESPONSIVE */
+
+@media (max-width: 768px) {
+
+  .projects-table thead {
+    display: none;
+  }
+
+  .projects-table,
+  .projects-table tbody,
+  .projects-table tr,
+  .projects-table td {
+    display: block;
+    width: 100%;
+  }
+
+  .projects-table tr {
+    margin-bottom: 15px;
+    border: 1px solid #ddd;
+    padding: 12px;
+    border-radius: 8px;
+    background: #fff;
+  }
+
+  .projects-table td {
+    text-align: left;
+    padding: 8px 6px;
+    border: none;
+    position: relative;
+  }
+
+  .projects-table td:nth-child(1)::before {
+    content: "Sr No: ";
+    font-weight: bold;
+  }
+
+  .projects-table td:nth-child(2)::before {
+    content: "Project: ";
+    font-weight: bold;
+  }
+
+  .projects-table td:nth-child(3)::before {
+    content: "Cost: ";
+    font-weight: bold;
+  }
+
+  .projects-table td:nth-child(4)::before {
+    content: "";
+  }
+
+  .view-btn {
+    width: 100%;
+    margin-top: 8px;
+  }
+}

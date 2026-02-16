@@ -1,0 +1,164 @@
+<mat-toolbar color="primary" class="navbar">
+  <span class="navbar-title">CBC Verified Report</span>
+  <span class="spacer"></span>
+  <button mat-raised-button color="accent" routerLink="/report">
+    <mat-icon>arrow_back</mat-icon> Back
+  </button>
+</mat-toolbar>
+
+<div class="main-container">
+
+  <mat-card class="filter-card">
+    <mat-card-header>
+      <mat-card-title>CBC Verified Data Filter</mat-card-title>
+      <mat-card-subtitle>Select District to Load Verified CBC Data</mat-card-subtitle>
+    </mat-card-header>
+
+    <mat-card-content>
+      <div class="filter-controls">
+        <mat-form-field appearance="outline">
+          <mat-label>Select District</mat-label>
+          <mat-select (selectionChange)="onDistrictSelect($event)">
+            <mat-option value="">-- Select District --</mat-option>
+            <mat-option *ngFor="let d of districts" [value]="d.name">
+              {{ d.name }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <button mat-raised-button color="primary" class="load-btn" (click)="fetchData()">
+          <mat-icon>search</mat-icon> Load Data
+        </button>
+      </div>
+    </mat-card-content>
+  </mat-card>
+
+  <div *ngIf="isLoading" class="loading-state">
+    <mat-spinner diameter="40"></mat-spinner>
+    <span>Loading Verified CBC Data...</span>
+  </div>
+
+  <div *ngIf="cbcData.length === 0 && !isLoading" class="empty-state">
+    <mat-icon class="large-icon">search</mat-icon>
+    <p>Please select a district to load verified CBC data.</p>
+  </div>
+
+  <div *ngIf="cbcData.length > 0 && !isLoading" class="table-wrapper">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Applicant Name</th>
+          <th>Mandal</th>
+          <th>District</th>
+          <th>Industry / Activity</th>
+          <th>Unit Address</th>
+          <th style="text-align: center;">Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let row of cbcData; let i = index">
+          <td>{{ i + 1 }}</td>
+          <td>{{ row.applicant_name }}</td>
+          <td>{{ row.mandal }}</td>
+          <td>{{ row.district }}</td>
+          <td>{{ row.industry_activity }}</td>
+          <td>{{ row.unit_address }}</td>
+          <td style="text-align: center;">
+            
+            <button *ngIf="row.sector || row.unit_name || row.employees_count || row.working_photos" 
+                    mat-stroked-button 
+                    color="primary" 
+                    (click)="openDetailModal(row, 'working')">
+              Working
+            </button>
+
+            <button *ngIf="row.not_working_remarks" 
+                    mat-stroked-button 
+                    color="warn" 
+                    style="margin-left: 8px;"
+                    (click)="openDetailModal(row, 'notWorking')">
+              Not Working
+            </button>
+
+            <span *ngIf="!row.sector && !row.unit_name && !row.employees_count && !row.working_photos && !row.not_working_remarks" class="no-status">
+              {{ row.final_status || 'Pending' }}
+            </span>
+
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="modal-overlay" *ngIf="isModalOpen">
+    <div class="modal-card mat-elevation-z16">
+      <div class="modal-header">
+        <h3>{{ modalTitle }}</h3>
+        <button mat-icon-button (click)="closeModal()"><mat-icon>close</mat-icon></button>
+      </div>
+      <mat-divider></mat-divider>
+      
+      <div class="modal-body">
+        <p><strong>Applicant:</strong> {{ selectedRow.applicant_name }}</p>
+
+        <div *ngIf="modalType === 'working'">
+          <table class="detail-table">
+            <tr><td><strong>Unit Name</strong></td><td>{{ selectedRow.unit_name }}</td></tr>
+            <tr><td><strong>Sector</strong></td><td>{{ selectedRow.sector }}</td></tr>
+            <tr><td><strong>Products</strong></td><td>{{ selectedRow.products_manufactured }}</td></tr>
+            <tr><td><strong>Employees</strong></td><td>{{ selectedRow.employees_count }}</td></tr>
+            <tr><td><strong>Annual Production</strong></td><td>{{ selectedRow.total_production_annual }}</td></tr>
+            <tr><td><strong>Prod. Value</strong></td><td>{{ selectedRow.value_of_production_annual }}</td></tr>
+            <tr><td><strong>Annual Turnover</strong></td><td>{{ selectedRow.annual_turnover }}</td></tr>
+            <tr><td><strong>Latitude</strong></td><td>{{ selectedRow.working_latitude }}</td></tr>
+            <tr><td><strong>Longitude</strong></td><td>{{ selectedRow.working_longitude }}</td></tr>
+          </table>
+
+          <div id="mapContainerCbc" class="map-container"></div>
+
+          <h4>Photos</h4>
+          <div class="photo-grid" *ngIf="getPhotos(selectedRow.working_photos).length > 0">
+            <img *ngFor="let p of getPhotos(selectedRow.working_photos); let idx = index"
+                 [src]="p" class="thumbnail" (click)="openImageViewer(getPhotos(selectedRow.working_photos), idx)" />
+          </div>
+          <div *ngIf="getPhotos(selectedRow.working_photos).length === 0">No photos available</div>
+        </div>
+
+        <div *ngIf="modalType === 'notWorking'">
+          <p><strong>Remarks:</strong></p>
+          <div class="remarks-box">{{ selectedRow.not_working_remarks }}</div>
+
+          <table class="detail-table">
+            <tr><td><strong>Latitude</strong></td><td>{{ selectedRow.not_working_latitude }}</td></tr>
+            <tr><td><strong>Longitude</strong></td><td>{{ selectedRow.not_working_longitude }}</td></tr>
+          </table>
+
+          <div id="mapContainerCbc" class="map-container"></div>
+
+          <h4>Photos</h4>
+          <div class="photo-grid" *ngIf="getPhotos(selectedRow.not_working_photos).length > 0">
+            <img *ngFor="let p of getPhotos(selectedRow.not_working_photos); let idx = index"
+                 [src]="p" class="thumbnail" (click)="openImageViewer(getPhotos(selectedRow.not_working_photos), idx)" />
+          </div>
+          <div *ngIf="getPhotos(selectedRow.not_working_photos).length === 0">No photos available</div>
+        </div>
+      </div>
+      
+      <mat-divider></mat-divider>
+      <div class="modal-footer">
+        <button mat-button (click)="closeModal()">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="isViewerOpen" class="image-viewer-overlay" (click)="closeImageViewer($event)">
+    <div class="image-viewer-content">
+      <button class="close-btn" (click)="closeImageViewer()">×</button>
+      <button class="nav-btn left" (click)="prevImage($event)">❮</button>
+      <img [src]="currentImage" class="viewer-image" />
+      <button class="nav-btn right" (click)="nextImage($event)">❯</button>
+    </div>
+  </div>
+
+</div>

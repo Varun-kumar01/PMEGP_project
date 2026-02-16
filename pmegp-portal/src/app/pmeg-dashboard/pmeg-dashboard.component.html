@@ -1,0 +1,76 @@
+<div class="table-container">
+  <table>
+
+    <colgroup>
+      <col style="width:80px" />
+      <col style="width:180px" />
+    </colgroup>
+
+    <thead>
+
+      <tr>
+        <th class="sticky-col sticky-col-1" rowspan="2">Row No</th>
+        <th class="sticky-col sticky-col-2" rowspan="2">Name of the District </th>
+
+        <th colspan="2">No of Applications <br>At Agency</th>
+        <th rowspan="2">No of Applications <br>Pending At Agency</th>
+        <th rowspan="2">No of Applications <br>Forwarded to Bank</th>
+        <th colspan="2">Sanctioned by Bank</th>
+        <th colspan="2">MM Claimed</th>
+        <th colspan="2">MM Disbursement</th>
+        <th rowspan="2">No of Applications <br>Returned by Bank</th>
+        <th colspan="2">Pending at Bank</th>
+        <th colspan="2">Pending for MM Disbursement</th>
+      </tr>
+
+
+      <tr>
+        <th>Received</th>
+        <th>Returned</th>
+        <th>No of Prj</th>
+        <th>MM (in Lakh)</th>
+        <th>No of Prj</th>
+        <th>MM (in Lakh)</th>
+        <th>No of Prj</th>
+        <th>MM (in Lakh)</th>
+        <th>No of Prj</th>
+        <th>MM (in Lakh)</th>
+        <th>No of Prj</th>
+        <th>MM (in Lakh)</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <tr *ngFor="let row of tableData">
+        <td class="sticky-col sticky-col-1">{{ row.rowNo }}</td>
+        <td class="sticky-col sticky-col-2">{{ row.name }}</td>
+
+        <td>
+          <a href="#" (click)="onAgencyClick($event, row)">
+            {{ row.agencyReceived }}
+          </a>
+        </td>
+
+        <td>{{ row.agencyReturned }}</td>
+        <td>{{ row.Pending_At_Agency }}</td>
+        <td>{{ row.Forwarded_to_Bank }}</td>
+        <td>{{ row.sanctionedPrj }}</td>
+        <td>{{ row.sanctionedLakh }}</td>
+        <td>{{ row.claimedPrj }}</td>
+        <td>{{ row.claimedLakh }}</td>
+        <td>{{ row.disbursementPrj }}</td>
+        <td>{{ row.disbursementLakh }}</td>
+        <td>{{ row.bankReturned }}</td>
+        <td>{{ row.pendingBankPrj }}</td>
+        <td>{{ row.pendingBankLakh }}</td>
+        <td>{{ row.pendingDisbursementPrj }}</td>
+        <td>{{ row.pendingDisbursementLakh }}</td>
+      </tr>
+
+      <tr *ngIf="tableData.length === 0">
+        <td colspan="17" class="no-data">Loading data or no data available…</td>
+      </tr>
+    </tbody>
+
+  </table>
+</div>

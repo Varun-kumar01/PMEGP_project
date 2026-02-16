@@ -1,0 +1,284 @@
+<mat-toolbar color="primary" class="navbar">
+  <span class="navbar-title">CBC Data Verification</span>
+  <span class="spacer"></span>
+  <button mat-raised-button color="accent" routerLink="/district-mandal-filter">
+    <mat-icon>arrow_back</mat-icon> Back
+  </button>
+</mat-toolbar>
+
+<div class="main-container">
+
+  <mat-card class="filter-card">
+    <mat-card-header>
+      <mat-card-title>CBC Data Filter</mat-card-title>
+      <mat-card-subtitle>Select District to Load CBC Data</mat-card-subtitle>
+    </mat-card-header>
+
+    <mat-card-content>
+      <div class="filter-controls">
+
+        <mat-form-field appearance="outline">
+          <mat-label>Select District</mat-label>
+          <mat-select (selectionChange)="onDistrictSelect($event)">
+            <mat-option value="">-- Select District --</mat-option>
+            <mat-option *ngFor="let d of districts" [value]="d.name">
+              {{ d.name }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <button mat-raised-button color="primary" class="load-btn" (click)="fetchData()">
+          <mat-icon>search</mat-icon> Load Data
+        </button>
+
+      </div>
+    </mat-card-content>
+  </mat-card>
+
+  <div *ngIf="isLoading" class="loading-state">
+    <mat-spinner diameter="40"></mat-spinner>
+    <span>Loading CBC Data...</span>
+  </div>
+
+  <div class="table-container mat-elevation-z8" *ngIf="cbcData.length > 0 && !isLoading">
+    <table class="mat-table">
+
+      <thead>
+        <tr>
+          <th class="mat-header-cell col-sl">Sl. No.</th>
+          <th class="mat-header-cell col-borrower">Name of Borrower</th>
+          <th class="mat-header-cell col-district">District</th>
+          <th class="mat-header-cell col-mandal">Mandal</th>
+          <th class="mat-header-cell col-village">Village</th>
+          <th class="mat-header-cell col-year">Year of Sanction</th>
+          <th class="mat-header-cell col-industry">Name of Industry</th>
+          <th class="mat-header-cell col-mm">Sanctioned MM</th>
+          <th class="mat-header-cell col-total">Sanctioned Total</th>
+          <th class="mat-header-cell col-status">Present Status</th>
+          <th class="mat-header-cell col-action">Action</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr *ngFor="let row of cbcData; let i = index" class="hover-row">
+
+          <td class="mat-cell col-sl" style="text-align: center;">{{ i + 1 }}</td>
+          
+          <td class="mat-cell col-borrower">
+            <strong>{{ row.name_and_address_borrower }}</strong>
+          </td>
+          
+          <td class="mat-cell col-district">{{ row.district }}</td>
+          <td class="mat-cell col-mandal">{{ row.mandal }}</td>
+          <td class="mat-cell col-village">{{ row.village }}</td>
+          
+          <td class="mat-cell col-year" style="text-align: center;">{{ row.year_of_sanction }}</td>
+          
+          <td class="mat-cell col-industry">{{ row.industry }}</td>
+          
+          <td class="mat-cell col-mm" style="text-align: center;">{{ row.sanctioned_mm }}</td>
+          <td class="mat-cell col-total" style="text-align: center;">{{ row.sanctioned_total }}</td>
+
+          <td class="mat-cell col-status">
+            <div class="status-container">
+              <button mat-raised-button color="primary" 
+                      class="status-btn"
+                      (click)="openWorkingModal(row)"
+                      [ngClass]="{'selected': row.present_status === 'Working'}">
+                Working
+              </button>
+
+              <button mat-raised-button color="warn"
+                      class="status-btn"
+                      (click)="openNotWorkingModal(row)"
+                      [ngClass]="{'selected': row.present_status === 'Not Working'}">
+                Not Working
+              </button>
+            </div>
+          </td>
+
+          <td class="mat-cell col-action">
+            <button mat-raised-button color="accent"
+                    class="action-btn"
+                    (click)="submitVerification(row)">
+              Submit
+            </button>
+          </td>
+
+        </tr>
+      </tbody>
+
+    </table>
+  </div>
+
+  <div *ngIf="cbcData.length === 0 && !isLoading" class="empty-state">
+    <mat-icon class="large-icon">search</mat-icon>
+    <p>Please select a district to load CBC data.</p>
+  </div>
+
+</div>
+
+
+<div class="modal-overlay" *ngIf="isModalOpen">
+  
+  <mat-card class="modal-card mat-elevation-z16">
+    
+    <div class="modal-header">
+      <h2 class="modal-title">
+        {{ verificationType === 'working' ? 'Unit Working Details' : 
+           'Unit Not Working Declaration' }}
+      </h2>
+      <button mat-icon-button (click)="closeModal()">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+
+    <mat-divider></mat-divider>
+
+    <mat-card-content class="modal-body">
+      
+      <div class="applicant-summary">
+        <strong>Borrower:</strong> {{ currentBorrower.name_and_address_borrower }}
+      </div>
+
+      <form *ngIf="verificationType === 'working'" (ngSubmit)="submitWorkingForm()" class="material-form">
+        
+        <div class="row-2-col">
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>1. Sector (Manufacturing/Service)</mat-label>
+            <input matInput [(ngModel)]="workingFormData.unitSector" name="unitSector" required>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>2. Name given to the Unit</mat-label>
+            <input matInput [(ngModel)]="workingFormData.unitName" name="unitName" required>
+          </mat-form-field>
+        </div>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>3. Name of Products & Cost</mat-label>
+          <textarea matInput [(ngModel)]="workingFormData.productsCost" name="productsCost" rows="2" required></textarea>
+        </mat-form-field>
+
+        <div class="radio-section">
+          <label class="radio-label">4. Marketing Strategy:</label>
+          <mat-radio-group [(ngModel)]="workingFormData.marketing" name="marketing" required color="primary">
+            <mat-radio-button value="Local">Local</mat-radio-button>
+            <mat-radio-button value="OtherDistricts">Other Districts</mat-radio-button>
+            <mat-radio-button value="Export">Export</mat-radio-button>
+          </mat-radio-group>
+        </div>
+
+        <div class="row-2-col">
+          <mat-form-field appearance="outline">
+            <mat-label>5. Employees Engaged</mat-label>
+            <input matInput type="number" [(ngModel)]="workingFormData.employees" name="employees" required min="0">
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>6. Total Production (Annual)</mat-label>
+            <input matInput type="number" [(ngModel)]="workingFormData.annualProduction" name="annualProduction" required min="0">
+          </mat-form-field>
+        </div>
+
+        <div class="row-2-col">
+          <mat-form-field appearance="outline">
+            <mat-label>7. Value of Production (Annual)</mat-label>
+            <input matInput type="number" [(ngModel)]="workingFormData.productionValue" name="productionValue" required min="0">
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>8. Annual Turnover (Rs.)</mat-label>
+            <input matInput type="number" [(ngModel)]="workingFormData.annualTurnover" name="annualTurnover" required min="0">
+          </mat-form-field>
+        </div>
+
+        <div class="location-section" style="margin: 10px 0; padding: 10px; background: #f1f8e9; border-radius: 4px;">
+          <button type="button" mat-raised-button color="primary" (click)="getCurrentLocation()">
+            <mat-icon>my_location</mat-icon> Get Current Location
+          </button>
+          <div id="location-map" style="width: 100%; height: 400px; margin-top: 10px; border-radius: 4px; border: 1px solid #ddd;"></div>
+          <div class="row-2-col" style="margin-top: 10px;">
+            <mat-form-field appearance="outline">
+              <mat-label>Latitude</mat-label>
+              <input matInput [(ngModel)]="workingFormData.latitude" name="latitude" readonly>
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+              <mat-label>Longitude</mat-label>
+              <input matInput [(ngModel)]="workingFormData.longitude" name="longitude" readonly>
+            </mat-form-field>
+          </div>
+        </div>
+
+        <div class="upload-section">
+          <label>9. Capture Photos (Max 5)</label>
+          <button type="button" mat-stroked-button color="primary" (click)="fileInput.click()">
+            <mat-icon>cloud_upload</mat-icon> Select Photos
+          </button>
+          <input #fileInput hidden type="file" multiple accept="image/*" (change)="onFileChange($event, workingFormData)">
+          
+          <mat-error *ngIf="fileErrorMessage">{{ fileErrorMessage }}</mat-error>
+          
+          <div class="image-previews" *ngIf="photoPreviews.length">
+            <img *ngFor="let url of photoPreviews" [src]="url" class="thumb">
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button mat-button type="button" (click)="closeModal()">Cancel</button>
+          <button mat-raised-button color="primary" type="submit">Save Details</button>
+        </div>
+      </form>
+
+      <form *ngIf="verificationType === 'notWorking'" (ngSubmit)="submitNotWorkingForm()" class="material-form">
+        
+        <div class="alert-box">
+          <mat-icon color="warn">warning</mat-icon>
+          <span>Confirming that this unit is presently non-operational.</span>
+        </div>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Remarks / Reason</mat-label>
+          <textarea matInput [(ngModel)]="notWorkingFormData.remarks" name="notWorkingRemarks" rows="3" required></textarea>
+        </mat-form-field>
+
+        <div class="location-section" style="margin: 10px 0; padding: 10px; background: #fff3e0; border-radius: 4px;">
+          <button type="button" mat-raised-button color="primary" (click)="getCurrentLocation()">
+            <mat-icon>my_location</mat-icon> Get Current Location
+          </button>
+          <div id="location-map" style="width: 100%; height: 400px; margin-top: 10px; border-radius: 4px; border: 1px solid #ddd;"></div>
+          <div class="row-2-col" style="margin-top: 10px;">
+            <mat-form-field appearance="outline">
+              <mat-label>Latitude</mat-label>
+              <input matInput [(ngModel)]="notWorkingFormData.latitude" name="notWorkingLatitude" readonly>
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+              <mat-label>Longitude</mat-label>
+              <input matInput [(ngModel)]="notWorkingFormData.longitude" name="notWorkingLongitude" readonly>
+            </mat-form-field>
+          </div>
+        </div>
+
+        <div class="upload-section">
+          <label>Upload Proof Photos (Max 5)</label>
+          <button type="button" mat-stroked-button color="primary" (click)="nwFileInput.click()">
+            <mat-icon>camera_alt</mat-icon> Select Photos
+          </button>
+          <input #nwFileInput hidden type="file" multiple accept="image/*" (change)="onNotWorkingFileChange($event)">
+          
+          <mat-error *ngIf="notWorkingError">{{ notWorkingError }}</mat-error>
+
+          <div class="image-previews" *ngIf="notWorkingPhotoPreview.length">
+            <img *ngFor="let url of notWorkingPhotoPreview" [src]="url" class="thumb">
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button mat-button type="button" (click)="closeModal()">Cancel</button>
+          <button mat-raised-button color="warn" type="submit">Confirm Not Working</button>
+        </div>
+      </form>
+
+    </mat-card-content>
+  </mat-card>
+</div>

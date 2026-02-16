@@ -1,0 +1,142 @@
+<mat-card class="file-upload-card">
+  <mat-card-header>
+    <mat-card-title>Main Summary File Upload</mat-card-title>
+    <mat-card-subtitle>Upload the Main Excel File (Summary of 33 Agencies)</mat-card-subtitle>
+  </mat-card-header>
+  <mat-card-content>
+    <input type="file" class="visually-hidden" #fileInput (change)="onMainFileSelected($event)" accept=".xlsx,.xls">
+    <div>
+      <button mat-stroked-button (click)="fileInput.click()">
+        <mat-icon>attach_file</mat-icon> Choose File
+      </button>
+      <span class="file-name" *ngIf="mainFile">{{ mainFile.name }}</span>
+    </div>
+  </mat-card-content>
+  <mat-card-actions class="upload-actions">
+    <button mat-raised-button color="primary" [disabled]="!mainFile || isUploading" (click)="uploadFiles()">
+      <span *ngIf="!isUploading">Upload Main File</span>
+      <span *ngIf="isUploading" class="uploading-spinner">
+        <mat-progress-spinner mode="indeterminate" diameter="20"></mat-progress-spinner>
+      </span>
+    </button>
+  </mat-card-actions>
+  <div *ngIf="uploadMessage" class="upload-message" [ngClass]="messageType">{{ uploadMessage }}</div>
+</mat-card>
+
+<mat-card class="file-upload-card agency-upload-card">
+  <mat-card-header>
+    <mat-card-title>Agency Detail File Upload</mat-card-title>
+    <mat-card-subtitle>Upload a detailed Excel file (Single Agency)</mat-card-subtitle>
+  </mat-card-header>
+  <mat-card-content>
+    <input type="file" class="visually-hidden" #agencyFileInput (change)="onAgencyFileSelected($event)" accept=".xlsx,.xls">
+    <div>
+      <button mat-stroked-button (click)="agencyFileInput.click()">
+        <mat-icon>description</mat-icon> Choose Agency File
+      </button>
+      <span class="file-name" *ngIf="agencyFile">{{ agencyFile.name }}</span>
+    </div>
+  </mat-card-content>
+  <mat-card-actions class="upload-actions">
+    <button mat-raised-button color="accent" [disabled]="!agencyFile || isUploadingAgency" (click)="uploadAgencyFile()">
+      <span *ngIf="!isUploadingAgency">Upload Agency File</span>
+      <span *ngIf="isUploadingAgency" class="uploading-spinner">
+        <mat-progress-spinner mode="indeterminate" diameter="20"></mat-progress-spinner>
+      </span>
+    </button>
+  </mat-card-actions>
+  <div *ngIf="agencyUploadMessage" class="upload-message" [ngClass]="agencyMessageType">{{ agencyUploadMessage }}</div>
+</mat-card>
+
+<mat-card class="file-upload-card agency-upload-card">
+  <mat-card-header>
+    <mat-card-title>Kvib Trainee Data Upload</mat-card-title>
+    <mat-card-subtitle>Upload large trainee datasets (kvib_data table)</mat-card-subtitle>
+  </mat-card-header>
+  <mat-card-content>
+    <input type="file" class="visually-hidden" #kvibFileInput (change)="onKvibFileSelected($event)" accept=".xlsx,.xls,.csv">
+    <div>
+      <button mat-stroked-button (click)="kvibFileInput.click()">
+        <mat-icon>group_add</mat-icon> Choose Trainee File
+      </button>
+      <span class="file-name" *ngIf="kvibFile">{{ kvibFile.name }}</span>
+    </div>
+  </mat-card-content>
+  <mat-card-actions class="upload-actions">
+    <button mat-raised-button color="warn" [disabled]="!kvibFile || isUploadingKvib" (click)="uploadKvibFile()">
+      <span *ngIf="!isUploadingKvib">Upload Trainee Data</span>
+      <span *ngIf="isUploadingKvib" class="uploading-spinner">
+        <mat-progress-spinner mode="indeterminate" diameter="20"></mat-progress-spinner>
+      </span>
+    </button>
+  </mat-card-actions>
+  <div *ngIf="kvibUploadMessage" class="upload-message" [ngClass]="kvibMessageType">{{ kvibUploadMessage }}</div>
+</mat-card>
+
+<mat-card class="file-upload-card">
+
+  <mat-card-header>
+    <mat-card-title>Project PDF Upload</mat-card-title>
+    <mat-card-subtitle>
+      Upload project title, cost and PDF
+    </mat-card-subtitle>
+  </mat-card-header>
+
+  <mat-card-content>
+
+    <input type="text"
+           [(ngModel)]="projectTitle"
+           placeholder="Project Title">
+
+    <input type="number"
+           [(ngModel)]="projectCost"
+           placeholder="Project Cost">
+
+    <input type="file"
+           #projectFileInput
+           class="visually-hidden"
+           accept="application/pdf"
+           (change)="onProjectFileSelected($event)">
+
+    <button mat-stroked-button
+            (click)="projectFileInput.click()">
+      <mat-icon>picture_as_pdf</mat-icon>
+      Choose PDF
+    </button>
+
+    <span *ngIf="projectPdf">
+      {{ projectPdf.name }}
+    </span>
+
+  </mat-card-content>
+
+  <mat-card-actions>
+
+    <button mat-raised-button
+            color="primary"
+            [disabled]="projectUploading"
+            (click)="uploadProject()">
+
+      <span *ngIf="!projectUploading">
+        Upload Project
+      </span>
+
+      <mat-progress-spinner
+        *ngIf="projectUploading"
+        diameter="20"
+        mode="indeterminate">
+      </mat-progress-spinner>
+
+    </button>
+
+  </mat-card-actions>
+
+  <div *ngIf="projectUploadMessage"
+       class="upload-message"
+       [ngClass]="projectMessageType">
+
+    {{ projectUploadMessage }}
+
+  </div>
+
+</mat-card>

@@ -1,0 +1,266 @@
+
+<div class="form-wrapper">
+
+  <div class="filter-card">
+    <h3>Physical Verification Filter</h3>
+    <p class="filter-subtitle">Select location to load data</p>
+    
+    <div class="filter-controls">
+      <div class="filter-group">
+        <label for="filterDistrict">District</label>
+        <select id="filterDistrict" class="form-control">
+          <option value="">-- Select District --</option>
+          <option value="district1">District 1</option>
+          <option value="district2">District 2</option>
+        </select>
+      </div>
+
+      <div class="filter-group">
+        <label for="filterMandal">Mandal</label>
+        <select id="filterMandal" class="form-control">
+          <option value="">-- Select Mandal --</option>
+          <option value="mandal1">Mandal 1</option>
+          <option value="mandal2">Mandal 2</option>
+        </select>
+      </div>
+
+      <button class="load-btn">Load Data</button>
+    </div>
+  </div>
+
+  <div class="form-container" [formGroup]="verificationForm" (ngSubmit)="onSubmit()">
+
+  <h2>PHYSICAL VERIFICATION REPORT ON PMEGP SCHEMA</h2>
+
+  <form class="verification-form">
+    <div class="form-section">
+      <h3>Beneficiary Details</h3>
+
+      <div class="form-group">
+        <label for="beneficiaryNameAddress">1. Beneficiary Name & Address</label>
+        <textarea id="beneficiaryNameAddress" class="form-control" formControlName="beneficiaryNameAddress" rows="3"></textarea>
+      </div>
+
+      <div class="form-grid-col-2">
+        <div class="form-group">
+          <label for="unitLocation">2. Unit Location</label>
+          <input type="text" id="unitLocation" class="form-control" formControlName="unitLocation">
+        </div>
+
+        <div class="form-group">
+          <label for="pmegpApplicationId">9. PMEGP Application ID</label>
+          <input type="text" id="pmegpApplicationId" class="form-control" formControlName="pmegpApplicationId">
+        </div>
+      </div>
+
+      <div class="form-grid-col-2">
+        <div class="form-group">
+          <label for="beneficiaryContact">10. Beneficiary Contact No</label>
+          <input type="tel" id="beneficiaryContact" class="form-control" formControlName="beneficiaryContact">
+        </div>
+
+        <div class="form-group">
+          <label for="photos">3. Upload Photos (Max 5)</label>
+          <input
+            type="file"
+            id="photos"
+            class="form-control"
+            (change)="onFileChange($event)"
+            multiple
+            accept="image/*">
+
+          <div class="validation-error" *ngIf="fileErrorMessage">
+            {{ fileErrorMessage }}
+          </div>
+
+          <div class="validation-error"
+               *ngIf="photosControl?.hasError('required') && photosControl?.touched && !fileErrorMessage">
+            At least one photo is required.
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group" *ngIf="photoPreviews.length > 0">
+        <div class="preview-container">
+          <label>Selected Photos Preview:</label>
+          <div class="preview-grid">
+            <div *ngFor="let photo of photoPreviews" class="preview-item">
+              <img [src]="photo" alt="Preview">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-section">
+      <h3>Financing Bank Details</h3>
+
+      <div class="form-group">
+        <label for="financingBankName">4. Financing Bank Name</label>
+        <input type="text" id="financingBankName" class="form-control" formControlName="financingBankName">
+      </div>
+
+      <div class="form-group">
+        <label for="financingBankAddress">5. Financing Bank Address</label>
+        <textarea id="financingBankAddress" class="form-control" formControlName="financingBankAddress" rows="2"></textarea>
+      </div>
+
+      <div class="form-grid-col-3">
+        <div class="form-group">
+          <label for="financingBranchName">6. Financing Branch Name</label>
+          <input type="text" id="financingBranchName" class="form-control" formControlName="financingBranchName">
+        </div>
+        <div class="form-group">
+          <label for="ifscCode">7. IFSC Code</label>
+          <input type="text" id="ifscCode" class="form-control" formControlName="ifscCode">
+        </div>
+        <div class="form-group">
+          <label for="financingBankPhone">8. Financing Bank Phone No</label>
+          <input type="tel" id="financingBankPhone" class="form-control" formControlName="financingBankPhone">
+        </div>
+      </div>
+    </div>
+
+    <div class="form-section">
+      <h3>Loan & Subsidy Details</h3>
+
+      <div class="form-group" formGroupName="loanSanctioned">
+        <label>11. Total Loan Sanctioned</label>
+        <div class="form-grid-col-3 multi-input">
+          <input type="number" class="form-control" placeholder="TL" formControlName="tl">
+          <input type="number" class="form-control" placeholder="CC" formControlName="cc">
+          <input type="number" class="form-control" placeholder="Total" formControlName="total">
+        </div>
+      </div>
+
+      <div class="form-group" formGroupName="loanReleased">
+        <label>12. Total Loan Released</label>
+        <div class="form-grid-col-3 multi-input">
+          <input type="number" class="form-control" placeholder="TL" formControlName="tl">
+          <input type="number" class="form-control" placeholder="CC" formControlName="cc">
+          <input type="number" class="form-control" placeholder="Total" formControlName="total">
+        </div>
+      </div>
+
+      <div class="form-grid-col-3">
+        <div class="form-group">
+          <label for="ownContribution">13. Own Contribution</label>
+          <input type="number" id="ownContribution" class="form-control" formControlName="ownContribution">
+        </div>
+        <div class="form-group">
+          <label for="firstInstallmentDate">14. Date of 1st Installment</label>
+          <input type="date" id="firstInstallmentDate" class="form-control" formControlName="firstInstallmentDate">
+        </div>
+        <div class="form-group">
+          <label for="balanceLoanToBeReleased">15. Balance Loan to be Released</label>
+          <input type="number" id="balanceLoanToBeReleased" class="form-control" formControlName="balanceLoanToBeReleased">
+        </div>
+      </div>
+
+      <div class="form-grid-col-2" formGroupName="workingCapitalUtilization">
+        <div class="form-group radio-group">
+          <label>16. Working capital 100% utilized?</label>
+          <div class="radio-options">
+            <label><input type="radio" value="Yes" formControlName="is100Percent"> Yes</label>
+            <label><input type="radio" value="No" formControlName="is100Percent"> No</label>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="workingCapitalAmountIfNot">If No, mention amount</label>
+          <input type="text" id="workingCapitalAmountIfNot" class="form-control" formControlName="amountIfNot">
+        </div>
+      </div>
+
+      <div class="form-grid-col-2">
+        <div class="form-group">
+          <label for="rateOfInterest">17. Rate of Interest (%)</label>
+          <input type="number" id="rateOfInterest" class="form-control" formControlName="rateOfInterest">
+        </div>
+        <div class="form-group">
+          <label for="mmSubsidyAmountReceived">18. MM Subsidy Amount Received</label>
+          <input type="number" id="mmSubsidyAmountReceived" class="form-control" formControlName="mmSubsidyAmountReceived">
+        </div>
+      </div>
+
+      <div class="form-grid-col-3">
+        <div class="form-group">
+          <label for="mmSubsidyReceivedDate">19. MM Subsidy Received Date</label>
+          <input type="date" id="mmSubsidyReceivedDate" class="form-control" formControlName="mmSubsidyReceivedDate">
+        </div>
+        <div class="form-group">
+          <label for="tdrFundAmount">20. TDR Fund Amount</label>
+          <input type="number" id="tdrFundAmount" class="form-control" formControlName="tdrFundAmount">
+        </div>
+        <div class="form-group">
+          <label for="tdrFundNumber">21. TDR Fund Number</label>
+          <input type="text" id="tdrFundNumber" class="form-control" formControlName="tdrFundNumber">
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="tdrFundDate">22. TDR Fund Date</label>
+        <input type="date" id="tdrFundDate" class="form-control" formControlName="tdrFundDate">
+      </div>
+    </div>
+
+    <div class="form-section">
+      <h3>Other Details</h3>
+
+      <div class="form-grid-col-3">
+        <div class="form-group radio-group">
+          <label>23. CGTMSE Coverage</label>
+          <div class="radio-options">
+            <label><input type="radio" value="Yes" formControlName="cgtmseCoverage"> Yes</label>
+            <label><input type="radio" value="No" formControlName="cgtmseCoverage"> No</label>
+          </div>
+        </div>
+
+        <div class="form-group radio-group">
+          <label>24. Interest Charged on MM</label>
+          <div class="radio-options">
+            <label><input type="radio" value="Yes" formControlName="interestChargedOnMM"> Yes</label>
+            <label><input type="radio" value="No" formControlName="interestChargedOnMM"> No</label>
+          </div>
+        </div>
+
+        <div class="form-group radio-group">
+          <label>25. Collateral Security</label>
+          <div class="radio-options">
+            <label><input type="radio" value="Yes" formControlName="collateralSecurityObtained"> Yes</label>
+            <label><input type="radio" value="No" formControlName="collateralSecurityObtained"> No</label>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="collateralSecurityValue">26. If Yes, Value of Collateral</label>
+        <input type="number" id="collateralSecurityValue" class="form-control" formControlName="collateralSecurityValue">
+      </div>
+
+      <div class="form-grid-col-2" formGroupName="repayment">
+        <div class="form-group radio-group">
+          <label>27. Repayment Regular?</label>
+          <div class="radio-options">
+            <label><input type="radio" value="Yes" formControlName="isRegular"> Yes</label>
+            <label><input type="radio" value="No" formControlName="isRegular"> No</label>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="npaDate">If No, NPA w.e.f.</label>
+          <input type="date" id="npaDate" class="form-control" formControlName="npaDate">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="otherRemarks">29. Any other Remarks</label>
+        <textarea id="otherRemarks" class="form-control" formControlName="otherRemarks" rows="4"></textarea>
+      </div>
+    </div>
+
+    <div class="form-actions">
+      <button type="submit" class="submit-btn" [disabled]="!verificationForm.valid">
+        Submit Verification Report
+      </button>
+    </div>
+  </form>
+  </div>
+</div>
