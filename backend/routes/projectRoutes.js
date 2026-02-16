@@ -80,10 +80,8 @@ router.post("/upload", upload.single("pdf"), async (req, res) => {
 router.get("/", async (req, res) => {
   try {
 
-    console.log("triggered from getting");
-
     const [rows] = await db.query(
-      "SELECT * FROM projects ORDER BY id DESC"
+      "SELECT * FROM projects ORDER BY id ASC"
     );
 
     res.status(200).json(rows);
