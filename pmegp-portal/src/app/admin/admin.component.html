@@ -73,7 +73,7 @@
   <div *ngIf="kvibUploadMessage" class="upload-message" [ngClass]="kvibMessageType">{{ kvibUploadMessage }}</div>
 </mat-card>
 
-<mat-card class="file-upload-card">
+<mat-card class="file-upload-card project-upload-card">
 
   <mat-card-header>
     <mat-card-title>Project PDF Upload</mat-card-title>
@@ -82,15 +82,23 @@
     </mat-card-subtitle>
   </mat-card-header>
 
-  <mat-card-content>
+<mat-card-content class="project-content">
+
+  <div class="project-fields">
 
     <input type="text"
            [(ngModel)]="projectTitle"
-           placeholder="Project Title">
+           placeholder="Project Title"
+           class="project-input">
 
     <input type="number"
            [(ngModel)]="projectCost"
-           placeholder="Project Cost">
+           placeholder="Project Cost"
+           class="project-input">
+
+  </div>
+
+  <div class="project-file-row">
 
     <input type="file"
            #projectFileInput
@@ -98,17 +106,19 @@
            accept="application/pdf"
            (change)="onProjectFileSelected($event)">
 
-    <button mat-stroked-button
+    <button mat-stroked-button color="primary"
             (click)="projectFileInput.click()">
       <mat-icon>picture_as_pdf</mat-icon>
       Choose PDF
     </button>
 
-    <span *ngIf="projectPdf">
+    <span class="project-file-name" *ngIf="projectPdf">
       {{ projectPdf.name }}
     </span>
 
-  </mat-card-content>
+  </div>
+
+</mat-card-content>
 
   <mat-card-actions>
 

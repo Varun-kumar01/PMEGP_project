@@ -90,3 +90,87 @@ button[mat-stroked-button] {
   margin-top: 8px;
 }
 
+/* ================= PROJECT UPLOAD CARD ================= */
+
+.project-upload-card {
+  border-left: 5px solid #6a1b9a;
+}
+
+/* layout */
+.project-content {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+/* two inputs side by side */
+.project-fields {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+/* input styling */
+.project-input {
+  padding: 12px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+  transition: border 0.2s ease, box-shadow 0.2s ease;
+}
+
+.project-input:focus {
+  outline: none;
+  border-color: #6a1b9a;
+  box-shadow: 0 0 0 2px rgba(106,27,154,0.15);
+}
+
+/* file row */
+.project-file-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+/* filename */
+.project-file-name {
+  font-size: 13px;
+  color: #444;
+  max-width: 320px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* upload button section */
+.project-upload-card .upload-actions {
+  justify-content: flex-end;
+}
+
+/* ================= MOBILE RESPONSIVE ================= */
+
+@media (max-width: 768px) {
+
+  .project-fields {
+    grid-template-columns: 1fr;
+  }
+
+  .project-file-row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .project-file-row button {
+    width: 100%;
+  }
+
+  .project-file-name {
+    white-space: normal;
+    word-break: break-word;
+  }
+
+  .project-upload-card .upload-actions button {
+    width: 100%;
+  }
+}
