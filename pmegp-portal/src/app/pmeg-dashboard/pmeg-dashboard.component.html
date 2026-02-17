@@ -67,6 +67,30 @@
         <td>{{ row.pendingDisbursementLakh }}</td>
       </tr>
 
+      <!-- GRAND TOTAL ROW -->
+      <tr class="total-row" *ngIf="tableData.length > 0">
+
+        <td class="sticky-col sticky-col-1"></td>
+        <td class="sticky-col sticky-col-2"><b>TOTAL</b></td>
+
+        <td>{{ totals.agencyReceived }}</td>
+        <td>{{ totals.agencyReturned }}</td>
+        <td>{{ totals.Pending_At_Agency }}</td>
+        <td>{{ totals.Forwarded_to_Bank }}</td>
+        <td>{{ totals.sanctionedPrj }}</td>
+        <td>{{ totals.sanctionedLakh | number:'1.0-3'  }}</td>
+        <td>{{ totals.claimedPrj }}</td>
+        <td>{{ totals.claimedLakh }}</td>
+        <td>{{ totals.disbursementPrj }}</td>
+        <td>{{ totals.disbursementLakh }}</td>
+        <td>{{ totals.bankReturned }}</td>
+        <td>{{ totals.pendingBankPrj }}</td>
+        <td>{{ totals.pendingBankLakh | number:'1.0-3'  }}</td>
+        <td>{{ totals.pendingDisbursementPrj }}</td>
+        <td>{{ totals.pendingDisbursementLakh }}</td>
+
+      </tr>
+
       <tr *ngIf="tableData.length === 0">
         <td colspan="17" class="no-data">Loading data or no data available…</td>
       </tr>
