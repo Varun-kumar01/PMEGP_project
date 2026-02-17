@@ -1,3 +1,49 @@
+/* Fixed Back Button at Bottom Left - Modern UI */
+.back-btn-fixed {
+  position: fixed;
+  left: 32px;
+  bottom: 32px;
+  z-index: 9999;
+  padding: 0 28px 0 12px;
+  height: 54px;
+  background-color:#61362f;
+  color: #fff;
+  border: none;
+  border-radius: 32px;
+  font-size: 20px;
+  cursor: pointer;
+  font-weight: 600;
+  box-shadow: 0 6px 24px rgba(80,40,120,0.18);
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  /* transition: background 0.2s, box-shadow 0.2s, transform 0.1s; */
+  outline: none;
+}
+.back-btn-fixed:hover, .back-btn-fixed:focus {
+  background: #111111 ;
+  box-shadow: 0 10px 32px rgba(80,40,120,0.22);
+  transform: translateY(-2px) scale(1.03);
+}
+.back-arrow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  background: #fff;
+  border-radius: 50%;
+  box-shadow: 0 2px 8px rgba(106,27,154,0.10);
+  margin-right: 8px;
+}
+.back-arrow svg {
+  display: block;
+}
+.back-text {
+  font-size: 18px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
 
 /* .table-container {
   width: 100%;

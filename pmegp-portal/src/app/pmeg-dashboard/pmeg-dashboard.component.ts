@@ -26,6 +26,10 @@ export class PmegDashboardComponent implements OnInit {
     private router: Router 
   ) { }
 
+  goBack() {
+    this.router.navigate(['/dashboard']);
+  }
+
   ngOnInit(): void {
 
     this.loadPmegData();
