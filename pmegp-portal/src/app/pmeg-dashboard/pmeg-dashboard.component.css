@@ -1,19 +1,29 @@
 
-.table-container {
+/* .table-container {
   width: 100%;
   overflow-x: auto;
   overflow-y: visible;
   border: 1px solid #ccc;
   background: #fff;
+} */
+
+.table-container {
+  width: 100%;
+  height: 100vh;            /* creates vertical scroll area */
+  overflow: auto;          /* IMPORTANT — both x and y scroll */
+  border: 1px solid #ccc;
+  background: #fff;
+  position: relative;
 }
 
-
 table {
-  width: max-content; 
-  border-collapse: collapse;
+  width: max-content;
+  border-collapse: separate;
+  border-spacing: 0;
   font-family: Arial, sans-serif;
   font-size: 13px;
 }
+
 
 th, td {
   border: 1px solid #ccc;
@@ -35,13 +45,9 @@ thead tr:nth-child(1) th {
 
 thead tr:nth-child(2) th {
   position: sticky;
-
-  top: 40px;
-
+  top: 52px;
   background: #f4f4f4;
   font-weight: bold;
-
-
   z-index: 80;
 }
 
@@ -79,8 +85,6 @@ thead .sticky-col-2 {
   background: #fff;
 }
 
-
-
 .table-container a {
   color: blue;
   text-decoration: underline;
@@ -98,4 +102,15 @@ thead .sticky-col-2 {
   padding: 20px;
   font-style: italic;
   color: #666;
+}
+
+/* Total Row Styling */
+.total-row {
+  background: #ffeeba;
+  font-weight: 700;
+  border-top: 3px solid #d39e00;
+}
+
+.total-row td {
+  color: #000;
 }
