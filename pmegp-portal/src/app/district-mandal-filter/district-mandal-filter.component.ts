@@ -765,7 +765,7 @@ export class DistrictMandalFilterComponent implements OnInit {
                 Lat: ${latitude.toFixed(6)}<br>
                 Lng: ${longitude.toFixed(6)}
               </small>
-            </div>
+            </div> 
           `;
           this.marker.setPopupContent(popupContent);
           this.marker.openPopup();
