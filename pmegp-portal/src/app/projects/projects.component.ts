@@ -13,16 +13,22 @@ import { Router } from '@angular/router';
   styleUrls: ['./projects.component.css']
 })
 export class ProjectsComponent implements OnInit {
+
   projects: any[] = [];
   loading = true;
 
-  // Pagination
+  // ✅ Pagination
   currentPage = 1;
   pageSize = 10;
 
   private apiUrl = environment.apiUrl;
 
-  constructor(private http: HttpClient, private location: Location, private router: Router) {}
+  constructor(
+    private http: HttpClient,
+    private location: Location,
+    private router: Router
+  ) {}
+
   goBack() {
     this.router.navigate(['/dashboard']);
   }
@@ -45,6 +51,8 @@ export class ProjectsComponent implements OnInit {
       });
   }
 
+  // ✅ Pagination Logic
+
   get totalPages(): number {
     return Math.ceil(this.projects.length / this.pageSize);
   }
@@ -58,6 +66,15 @@ export class ProjectsComponent implements OnInit {
     if (page >= 1 && page <= this.totalPages) {
       this.currentPage = page;
     }
+  }
+
+  get startRecord(): number {
+    return (this.currentPage - 1) * this.pageSize + 1;
+  }
+
+  get endRecord(): number {
+    const end = this.currentPage * this.pageSize;
+    return end > this.projects.length ? this.projects.length : end;
   }
 
   viewProject(file: string) {

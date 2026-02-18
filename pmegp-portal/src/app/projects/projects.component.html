@@ -1,24 +1,33 @@
 <div class="projects-container">
-
-  <h2>PMEGP Project Library</h2>
-
-  <div *ngIf="loading" class="loading">
-    Loading projects...
+  <div *ngIf="loading" class="loading">Loading projects...</div>
+  
+  <div class="projects-header">
+    <h2>PMEGP Project Library</h2>
+    <!-- Back Button (to previous route) -->
+    <!-- Fixed Back Button at Bottom Left -->
+    <button class="back-btn-fixed" (click)="goBack()">
+      
+      <span class="back-arrow">
+        <svg
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <circle cx="12" cy="12" r="12" fill="#fff" />
+          <path
+            d="M13.5 8L9.5 12L13.5 16"
+            stroke="#6a1b9a"
+            stroke-width="2.2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+        </svg>
+      </span>
+      <span class="back-text">Back</span>
+    </button>
   </div>
-
-
-  <!-- Back Button (to previous route) -->
-  <!-- Fixed Back Button at Bottom Left -->
-  <button class="back-btn-fixed" (click)="goBack()">
-    <span class="back-arrow">
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <circle cx="12" cy="12" r="12" fill="#fff"/>
-        <path d="M13.5 8L9.5 12L13.5 16" stroke="#6a1b9a" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
-      </svg>
-    </span>
-    <span class="back-text">Back to Home</span>
-  </button>
-
   <table *ngIf="!loading && projects.length > 0" class="projects-table">
     <thead>
       <tr>
@@ -42,36 +51,37 @@
     </tbody>
   </table>
 
-  <!-- Fixed Pagination Controls at Bottom Center -->
-  <div *ngIf="!loading && totalPages > 1" class="pagination-fixed">
-    <div class="pagination-container">
-      <div
-        class="pagination-box"
-        [class.disabled]="currentPage === 1"
-        (click)="setPage(currentPage - 1)"
-        [attr.aria-disabled]="currentPage === 1"
-      >&lt;</div>
 
-      <div
-        *ngFor="let page of [].constructor(totalPages); let i = index"
-        class="pagination-box"
-        [class.active]="currentPage === i + 1"
-        (click)="setPage(i + 1)"
-      >
-        {{ i + 1 }}
+      <!-- Fixed Pagination Controls at Bottom Center -->
+       
+      <div *ngIf="!loading && projects.length > 0" class="pagination-fixed">
+        <div class="pagination-container">
+          <!-- Left Arrow -->
+          <div
+            class="pagination-box"
+            [class.disabled]="currentPage === 1"
+            (click)="setPage(currentPage - 1)"
+          >
+            &lt;
+          </div>
+
+          <!-- Showing Count -->
+          <div class="pagination-info">
+            {{ startRecord }}–{{ endRecord }} of {{ projects.length }}
+          </div>
+
+          <!-- Right Arrow -->
+          <div
+            class="pagination-box"
+            [class.disabled]="currentPage === totalPages"
+            (click)="setPage(currentPage + 1)"
+          >
+            &gt;
+          </div>
+        </div>
       </div>
-
-      <div
-        class="pagination-box"
-        [class.disabled]="currentPage === totalPages"
-        (click)="setPage(currentPage + 1)"
-        [attr.aria-disabled]="currentPage === totalPages"
-      >&gt;</div>
-    </div>
-  </div>
 
   <div *ngIf="!loading && projects.length === 0" class="no-data">
     No projects uploaded yet.
   </div>
-
 </div>
