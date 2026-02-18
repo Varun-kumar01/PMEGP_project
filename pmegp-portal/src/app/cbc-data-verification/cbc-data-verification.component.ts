@@ -74,7 +74,9 @@ export class CbcDataVerificationComponent implements OnInit {
 
   districts: any[] = [];
   selectedDistrict = '';
+  searchMandal = '';
   cbcData: any[] = [];
+  allCbcData: any[] = [];
   isLoading = false;
 
 
@@ -128,11 +130,17 @@ export class CbcDataVerificationComponent implements OnInit {
 
   onDistrictSelect(event: any) {
     this.selectedDistrict = event.value;
+    this.searchMandal = '';
+    if (this.selectedDistrict) {
+      this.fetchData();
+    } else {
+      this.cbcData = [];
+      this.allCbcData = [];
+    }
   }
 
   fetchData() {
     if (!this.selectedDistrict) {
-      alert('Please select a District');
       return;
     }
 
@@ -142,7 +150,8 @@ export class CbcDataVerificationComponent implements OnInit {
       params: { district: this.selectedDistrict }
     }).subscribe({
       next: (data) => {
-        this.cbcData = data.map(r => ({ ...r, present_status: '' }));
+        this.allCbcData = data.map(r => ({ ...r, present_status: '' }));
+        this.cbcData = [...this.allCbcData];
         this.isLoading = false;
       },
       error: () => {
@@ -150,6 +159,17 @@ export class CbcDataVerificationComponent implements OnInit {
         this.isLoading = false;
       }
     });
+  }
+
+  onMandalSearch() {
+    if (!this.searchMandal.trim()) {
+      this.cbcData = [...this.allCbcData];
+    } else {
+      const term = this.searchMandal.toLowerCase().trim();
+      this.cbcData = this.allCbcData.filter(row =>
+        row.mandal && row.mandal.toLowerCase().includes(term)
+      );
+    }
   }
 
   setStatus(index: number, status: string) {
