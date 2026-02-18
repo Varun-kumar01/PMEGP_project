@@ -159,18 +159,18 @@
 
 </div>
 
+
 <div class="modal-overlay" *ngIf="isModalOpen">
-
+  
   <mat-card class="modal-card mat-elevation-z16">
-
+    
     <div class="modal-header">
       <h2 class="modal-title">
-        {{ verificationType === 'working' ? 'Unit Working Details' :
-           verificationType === 'notWorking' ? 'Unit Not Working Declaration' :
+        {{ verificationType === 'working' ? 'Unit Working Details' : 
+           verificationType === 'notWorking' ? 'Unit Not Working Declaration' : 
            'Unit Shifted Details' }}
       </h2>
-
-      <button mat-icon-button (click)="closeModal()" style="color:white;">
+      <button mat-icon-button (click)="closeModal()" style="color: white;">
         <mat-icon>close</mat-icon>
       </button>
     </div>
@@ -178,181 +178,298 @@
     <mat-divider></mat-divider>
 
     <mat-card-content class="modal-body">
-
+      
       <div class="applicant-summary">
-        <strong>Applicant:</strong> {{ currentApplicant.applicant_name }}<br>
+        <strong>Applicant:</strong> {{ currentApplicant.applicant_name }} <br>
         <strong>ID:</strong> {{ currentApplicant.applicant_id }}
       </div>
 
-      <!-- ================= WORKING FORM ================= -->
-
-      <form *ngIf="verificationType === 'working'"
-            #workingForm="ngForm"
-            (ngSubmit)="workingForm.valid && submitWorkingForm()"
-            class="material-form">
-
+      <form *ngIf="verificationType === 'working'" (ngSubmit)="submitWorkingForm()" class="material-form">
+        
         <div class="row-2-col">
-
           <mat-form-field appearance="outline" class="full-width">
-            <mat-label>1. Sector</mat-label>
-            <input matInput [(ngModel)]="workingFormData.unitSector"
-                   name="unitSector" required>
+            <mat-label>1. Sector (Manufacturing/Service)</mat-label>
+            <input matInput [(ngModel)]="workingFormData.unitSector" name="unitSector" required>
           </mat-form-field>
 
           <mat-form-field appearance="outline" class="full-width">
-            <mat-label>2. Unit Name</mat-label>
-            <input matInput [(ngModel)]="workingFormData.unitName"
-                   name="unitName" required>
+            <mat-label>2. Name given to the Unit</mat-label>
+            <input matInput [(ngModel)]="workingFormData.unitName" name="unitName" required>
           </mat-form-field>
-
         </div>
 
         <mat-form-field appearance="outline" class="full-width">
-          <mat-label>3. Products & Cost</mat-label>
-          <textarea matInput rows="2"
-                    [(ngModel)]="workingFormData.productsCost"
-                    name="productsCost" required></textarea>
+          <mat-label>3. Name of Products & Cost</mat-label>
+          <textarea matInput [(ngModel)]="workingFormData.productsCost" name="productsCost" rows="2" required></textarea>
         </mat-form-field>
 
         <div class="radio-section">
-          <label>4. Marketing Strategy:</label>
-          <mat-radio-group [(ngModel)]="workingFormData.marketing"
-                           name="marketing" required>
+          <label class="radio-label">4. Marketing Strategy:</label>
+          <mat-radio-group [(ngModel)]="workingFormData.marketing" name="marketing" required color="primary">
             <mat-radio-button value="Local">Local</mat-radio-button>
             <mat-radio-button value="OtherDistricts">Other Districts</mat-radio-button>
             <mat-radio-button value="Export">Export</mat-radio-button>
           </mat-radio-group>
         </div>
 
-        <!-- ===== NUMERIC FIELDS ===== -->
-
         <div class="row-2-col">
-
-          <!-- Employees -->
           <mat-form-field appearance="outline">
-            <mat-label>5. Employees</mat-label>
-
-            <input matInput type="text"
-                   [(ngModel)]="workingFormData.employees"
-                   name="employees"
-                   required
-                   pattern="^[0-9]+$"
-                   #emp="ngModel">
-
-            <mat-error *ngIf="emp.invalid && emp.touched">
-              Whole number ≥ 0 required
-            </mat-error>
+            <mat-label>5. Employees Engaged</mat-label>
+            <input matInput type="number" [(ngModel)]="workingFormData.employees" name="employees" required min="0">
           </mat-form-field>
 
-          <!-- Production -->
           <mat-form-field appearance="outline">
-            <mat-label>6. Production (Annual)</mat-label>
-
-            <input matInput type="text"
-                   [(ngModel)]="workingFormData.annualProduction"
-                   name="annualProduction"
-                   required
-                   pattern="^[0-9]+$"
-                   #prod="ngModel">
-
-            <mat-error *ngIf="prod.invalid && prod.touched">
-              Whole number ≥ 0 required
-            </mat-error>
+            <mat-label>6. Total Production (Annual)</mat-label>
+            <input matInput type="number" [(ngModel)]="workingFormData.annualProduction" name="annualProduction" required min="0">
           </mat-form-field>
-
         </div>
 
         <div class="row-2-col">
-
-          <!-- Value -->
           <mat-form-field appearance="outline">
-            <mat-label>7. Production Value</mat-label>
-
-            <input matInput type="text"
-                   [(ngModel)]="workingFormData.productionValue"
-                   name="productionValue"
-                   required
-                   pattern="^[0-9]+$"
-                   #val="ngModel">
-
-            <mat-error *ngIf="val.invalid && val.touched">
-              Whole number ≥ 0 required
-            </mat-error>
+            <mat-label>7. Value of Production (Annual)</mat-label>
+            <input matInput type="number" [(ngModel)]="workingFormData.productionValue" name="productionValue" required min="0">
           </mat-form-field>
 
-          <!-- Turnover -->
           <mat-form-field appearance="outline">
-            <mat-label>8. Turnover</mat-label>
-
-            <input matInput type="text"
-                   [(ngModel)]="workingFormData.annualTurnover"
-                   name="annualTurnover"
-                   required
-                   pattern="^[0-9]+$"
-                   #turn="ngModel">
-
-            <mat-error *ngIf="turn.invalid && turn.touched">
-              Whole number ≥ 0 required
-            </mat-error>
+            <mat-label>8. Annual Turnover (Rs.)</mat-label>
+            <input matInput type="number" [(ngModel)]="workingFormData.annualTurnover" name="annualTurnover" required min="0">
           </mat-form-field>
-
         </div>
 
-        <!-- LOCATION + UPLOAD sections remain EXACTLY same -->
+        <div class="location-section" style="margin: 10px 0; padding: 10px; background: #f1f8e9; border-radius: 4px;">
+          <button type="button" mat-raised-button color="primary" (click)="getCurrentLocation()">
+            <mat-icon>my_location</mat-icon> Get Current Location
+          </button>
+          
+          <div class="map-container">
+            <div id="location-map"></div>
+          </div>
+
+          <div class="row-2-col" style="margin-top: 10px;">
+            <mat-form-field appearance="outline">
+              <mat-label>Latitude</mat-label>
+              <input matInput [(ngModel)]="workingFormData.latitude" name="latitude" readonly>
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+              <mat-label>Longitude</mat-label>
+              <input matInput [(ngModel)]="workingFormData.longitude" name="longitude" readonly>
+            </mat-form-field>
+          </div>
+
+          <!-- <div class="row-2-col" style="margin-top: 10px;">
+            <mat-form-field appearance="outline">
+              <mat-label>City</mat-label>
+              <input matInput [(ngModel)]="workingFormData.city" name="city" readonly>
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+              <mat-label>State</mat-label>
+              <input matInput [(ngModel)]="workingFormData.state" name="state" readonly>
+            </mat-form-field>
+          </div> -->
+
+          <!-- <div class="row-2-col">
+            <mat-form-field appearance="outline">
+              <mat-label>Country</mat-label>
+              <input matInput [(ngModel)]="workingFormData.country" name="country" readonly>
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+              <mat-label>Pincode</mat-label>
+              <input matInput [(ngModel)]="workingFormData.pincode" name="pincode" readonly>
+            </mat-form-field>
+          </div> -->
+
+          <!-- <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Complete Address</mat-label>
+            <textarea matInput [(ngModel)]="workingFormData.address" name="address" rows="2" readonly placeholder="Auto-fetched from location"></textarea>
+          </mat-form-field> -->
+        </div>
+
+        <div class="upload-section">
+          <label>9. Capture Photos (Max 5) - {{ workingSelectedPhotos.length }}/5</label>
+          <div class="upload-buttons">
+            <button type="button" mat-stroked-button color="primary" (click)="fileInput.click()">
+              <mat-icon>cloud_upload</mat-icon> Select Photos
+            </button>
+            <button type="button" mat-stroked-button color="accent" (click)="cameraInput.click()">
+              <mat-icon>camera_alt</mat-icon> Capture Photo
+            </button>
+          </div>
+          <input #fileInput hidden type="file" multiple accept="image/*" (change)="onWorkingPhotoInput($event)">
+          <input #cameraInput hidden type="file" accept="image/*" capture="environment" (change)="onWorkingPhotoInput($event)">
+          
+          <mat-error *ngIf="fileErrorMessage">{{ fileErrorMessage }}</mat-error>
+          
+          <div class="image-previews" *ngIf="photoPreviews.length">
+            <div class="photo-item" *ngFor="let url of photoPreviews; let i = index">
+              <img [src]="url" class="thumb">
+              <button type="button" mat-icon-button color="warn" class="remove-btn" (click)="removeWorkingPhoto(i)">
+                <mat-icon>close</mat-icon>
+              </button>
+            </div>
+          </div>
+        </div>
 
         <div class="form-actions">
           <button mat-button type="button" (click)="closeModal()">Cancel</button>
-
-          <button mat-raised-button
-                  color="primary"
-                  type="submit"
-                  [disabled]="workingForm.invalid">
-            Save Details
-          </button>
+          <button mat-raised-button color="primary" type="submit">Save Details</button>
         </div>
-
       </form>
 
-      <!-- ===== NOT WORKING FORM (unchanged) ===== -->
-      <form *ngIf="verificationType === 'notWorking'"
-            (ngSubmit)="submitNotWorkingForm()"
-            class="material-form">
-
+      <form *ngIf="verificationType === 'notWorking'" (ngSubmit)="submitNotWorkingForm()" class="material-form">
+        
         <div class="alert-box">
           <mat-icon color="warn">warning</mat-icon>
-          <span>Unit is non-operational.</span>
+          <span>Confirming that this unit is presently non-operational.</span>
         </div>
 
         <mat-form-field appearance="outline" class="full-width">
-          <textarea matInput rows="3"
-                    [(ngModel)]="notWorkingFormData.remarks"
-                    name="remarks" required></textarea>
+          <mat-label>Remarks / Reason</mat-label>
+          <textarea matInput [(ngModel)]="notWorkingFormData.remarks" name="notWorkingRemarks" rows="3" required></textarea>
         </mat-form-field>
+
+        <div class="location-section" style="margin: 10px 0; padding: 10px; background: #fff3e0; border-radius: 4px;">
+          <button type="button" mat-raised-button color="primary" (click)="getCurrentLocation()">
+            <mat-icon>my_location</mat-icon> Get Current Location
+          </button>
+
+          <div class="map-container">
+            <div id="location-map"></div>
+          </div>
+
+          <div class="row-2-col" style="margin-top: 10px;">
+            <mat-form-field appearance="outline">
+              <mat-label>Latitude</mat-label>
+              <input matInput [(ngModel)]="notWorkingFormData.latitude" name="notWorkingLatitude" readonly>
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+              <mat-label>Longitude</mat-label>
+              <input matInput [(ngModel)]="notWorkingFormData.longitude" name="notWorkingLongitude" readonly>
+            </mat-form-field>
+          </div>
+
+          <!-- <div class="row-2-col" style="margin-top: 10px;">
+            <mat-form-field appearance="outline">
+              <mat-label>City</mat-label>
+              <input matInput [(ngModel)]="notWorkingFormData.city" name="city" readonly>
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+              <mat-label>State</mat-label>
+              <input matInput [(ngModel)]="notWorkingFormData.state" name="state" readonly>
+            </mat-form-field>
+          </div> -->
+
+          <!-- <div class="row-2-col">
+            <mat-form-field appearance="outline">
+              <mat-label>Country</mat-label>
+              <input matInput [(ngModel)]="notWorkingFormData.country" name="country" readonly>
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+              <mat-label>Pincode</mat-label>
+              <input matInput [(ngModel)]="notWorkingFormData.pincode" name="pincode" readonly>
+            </mat-form-field>
+          </div> -->
+
+          <!-- <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Complete Address</mat-label>
+            <textarea matInput [(ngModel)]="notWorkingFormData.address" name="address" rows="2" readonly placeholder="Auto-fetched from location"></textarea>
+          </mat-form-field> -->
+        </div>
+
+        <div class="upload-section">
+          <label>Upload Proof Photos (Max 5)</label>
+          <button type="button" mat-stroked-button color="primary" (click)="nwFileInput.click()">
+            <mat-icon>camera_alt</mat-icon> Select Photos
+          </button>
+          <input #nwFileInput hidden type="file" multiple accept="image/*" (change)="onNotWorkingFileChange($event)">
+          
+          <mat-error *ngIf="notWorkingError">{{ notWorkingError }}</mat-error>
+
+          <div class="image-previews" *ngIf="notWorkingPhotoPreview.length">
+            <img *ngFor="let url of notWorkingPhotoPreview" [src]="url" class="thumb">
+          </div>
+        </div>
 
         <div class="form-actions">
           <button mat-button type="button" (click)="closeModal()">Cancel</button>
-          <button mat-raised-button color="warn">Confirm</button>
+          <button mat-raised-button color="warn" type="submit">Confirm Not Working</button>
         </div>
-
       </form>
 
-      <!-- ===== SHIFTED FORM (unchanged) ===== -->
-
-      <form *ngIf="verificationType === 'shifted'"
-            (ngSubmit)="submitShiftedForm()"
-            class="material-form">
-
+      <form *ngIf="verificationType === 'shifted'" (ngSubmit)="submitShiftedForm()" class="material-form">
+        
         <mat-form-field appearance="outline" class="full-width">
-          <textarea matInput rows="3"
-                    [(ngModel)]="shiftedFormData.newAddress"
-                    name="newAddress" required></textarea>
+          <mat-label>New Address</mat-label>
+          <textarea matInput [(ngModel)]="shiftedFormData.newAddress" name="shiftedNewAddress" rows="3" placeholder="Enter new location..." required></textarea>
+          <mat-icon matSuffix>location_on</mat-icon>
         </mat-form-field>
+
+        <div class="location-section" style="margin: 10px 0; padding: 10px; background: #e3f2fd; border-radius: 4px;">
+          <button type="button" mat-raised-button color="primary" (click)="getCurrentLocation()">
+            <mat-icon>my_location</mat-icon> Get Current Location
+          </button>
+          
+          <div class="map-container">
+            <div id="location-map"></div>
+          </div>
+
+          <div class="row-2-col" style="margin-top: 15px;">
+            <mat-form-field appearance="outline">
+              <mat-label>Latitude</mat-label>
+              <input matInput [(ngModel)]="shiftedFormData.latitude" name="shiftedLatitude" readonly placeholder="Auto-filled">
+            </mat-form-field>
+            
+            <mat-form-field appearance="outline">
+              <mat-label>Longitude</mat-label>
+              <input matInput [(ngModel)]="shiftedFormData.longitude" name="shiftedLongitude" readonly placeholder="Auto-filled">
+            </mat-form-field>
+          </div>
+
+          <!-- <div class="row-2-col" style="margin-top: 10px;">
+            <mat-form-field appearance="outline">
+              <mat-label>City</mat-label>
+              <input matInput [(ngModel)]="shiftedFormData.city" name="city" readonly>
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+              <mat-label>State</mat-label>
+              <input matInput [(ngModel)]="shiftedFormData.state" name="state" readonly>
+            </mat-form-field>
+          </div> -->
+
+          <!-- <div class="row-2-col">
+            <mat-form-field appearance="outline">
+              <mat-label>Country</mat-label>
+              <input matInput [(ngModel)]="shiftedFormData.country" name="country" readonly>
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+              <mat-label>Pincode</mat-label>
+              <input matInput [(ngModel)]="shiftedFormData.pincode" name="pincode" readonly>
+            </mat-form-field>
+          </div> -->
+
+          <!-- <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Complete Address</mat-label>
+            <textarea matInput [(ngModel)]="shiftedFormData.address" name="address" rows="2" readonly placeholder="Auto-fetched from location"></textarea>
+          </mat-form-field> -->
+        </div>
+
+        <div class="upload-section">
+            <label>Upload Photos (Optional)</label>
+            <button type="button" mat-stroked-button color="primary" (click)="sFileInput.click()">
+              <mat-icon>add_a_photo</mat-icon> Add Photos
+            </button>
+            <input #sFileInput hidden type="file" multiple accept="image/*" (change)="onShiftedFileChange($event)">
+            
+            <mat-error *ngIf="shiftedError">{{ shiftedError }}</mat-error>
+  
+            <div class="image-previews" *ngIf="shiftedPhotoPreview.length">
+              <img *ngFor="let url of shiftedPhotoPreview" [src]="url" class="thumb">
+            </div>
+        </div>
 
         <div class="form-actions">
           <button mat-button type="button" (click)="closeModal()">Cancel</button>
-          <button mat-raised-button color="primary">Save</button>
+          <button mat-raised-button color="primary" type="submit">Save New Address</button>
         </div>
-
       </form>
 
     </mat-card-content>
