@@ -1,11 +1,69 @@
+/* ================= PAGE CONTAINER ================= */
+
 .projects-container {
-  padding: 30px;
+  padding: 20px 30px 100px 30px; /* bottom space for pagination */
+  position: relative;
 }
+
+.projects-header{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;} 
+
+/* ================= HEADING ================= */
 
 h2 {
   text-align: center;
-  margin-bottom: 20px;
+  margin: 10px 0 20px 0;  /* remove extra top space */
 }
+
+/* ================= BACK BUTTON ================= */
+
+.back-btn-fixed {
+  position: relative;   /* changed from absolute */
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+
+  margin-bottom: 15px;  /* spacing from heading */
+
+  padding: 6px 14px;
+  height: 38px;
+
+  background-color: #887854;
+  color: #fff;
+  border: none;
+  border-radius: 20px;
+
+  font-size: 14px;
+  font-weight: 500;
+
+  cursor: pointer;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.15);
+  transition: all 0.2s ease;
+}
+
+.back-btn-fixed:hover {
+  background-color: #6f623f;
+  transform: translateY(-1px);
+}
+
+.back-arrow {
+  width: 22px;
+  height: 22px;
+  background: #fff;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.back-text {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+/* ================= TABLE ================= */
 
 .projects-table {
   width: 100%;
@@ -17,6 +75,7 @@ h2 {
   background: #887854;
   color: white;
   padding: 12px;
+  text-align: center;
 }
 
 .projects-table td {
@@ -28,6 +87,8 @@ h2 {
 .projects-table tr:hover {
   background: #f2f2f2;
 }
+
+/* ================= VIEW BUTTON ================= */
 
 .view-btn {
   background: #d35400;
@@ -42,56 +103,52 @@ h2 {
   background: #a84300;
 }
 
+/* ================= LOADING / NO DATA ================= */
+
 .loading, .no-data {
   text-align: center;
   margin-top: 20px;
   font-size: 18px;
 }
 
+/* ================= PAGINATION ================= */
 
-/* Pagination Styles */
-/* Fixed Pagination Controls at Bottom Center */
 .pagination-fixed {
   position: fixed;
+  bottom: 20px;            /* adjust distance from bottom */
   left: 0;
-  right: 0;
-  bottom: 24px;
-  z-index: 9998;
+  width: 100%;
   display: flex;
-  justify-content: center;
-  pointer-events: none;
+  justify-content: center;  /* center the container horizontally */
+  pointer-events: none;     /* optional: let clicks go to inner items only */
 }
+
 .pagination-container {
   display: flex;
-  gap: 8px;
-  justify-content: center;
-  background: #fff;
-  border-radius: 16px;
-  box-shadow: 0 4px 16px rgba(80,40,120,0.10);
-  padding: 8px 24px;
-  pointer-events: auto;
+  align-items: center;      /* vertical align middle */
+  gap: 20px;                /* space between arrows and info */
+  background: #f5f5f5;      /* optional: background color */
+  padding: 8px 16px;
+  border-radius: 8px;
+  pointer-events: auto;      /* enable clicks inside */
 }
 
 .pagination-box {
-  width: 36px;
-  height: 36px;
+
+  width: 24px;
+  height: 24px;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #f0f0f0;
+  background: #ccc;
   border: 2px solid #ccc;
   border-radius: 6px;
   cursor: pointer;
   font-weight: bold;
-  transition: background 0.2s, border-color 0.2s, color 0.2s;
+  transition: 0.2s;
 }
 
-.pagination-box:hover {
-  background: #887854;
-  color: #fff;
-  border-color: #887854;
-}
-
+.pagination-box:hover,
 .pagination-box.active {
   background: #887854;
   color: #fff;
@@ -101,62 +158,26 @@ h2 {
 .pagination-box.disabled {
   opacity: 0.5;
   pointer-events: none;
-  cursor: default;
 }
 
-
-/* Fixed Back Button at Bottom Left */
-/* Fixed Back Button at Bottom Left - Modern UI */
-.back-btn-fixed {
-  position: fixed;
-  left: 32px;
-  bottom: 32px;
-  z-index: 9999;
-  padding: 0 28px 0 12px;
-  height: 54px;
-  background-color: #887854;
-  color: #fff;
-  border: none;
-  border-radius: 32px;
+.pagination-info {
+  
   font-size: 20px;
-  cursor: pointer;
   font-weight: 600;
-  box-shadow: 0 6px 24px rgba(80,40,120,0.18);
+  color: #333;
+  min-width: 140px;
   display: flex;
-  align-items: center;
-  gap: 14px;
-  transition: background 0.2s, box-shadow 0.2s, transform 0.1s;
-  outline: none;
-}
-.back-btn-fixed:hover, .back-btn-fixed:focus {
-  background-color: #887854 ;
-  box-shadow: 0 10px 32px rgba(80,40,120,0.22);
-  transform: translateY(-2px) scale(1.03);
-}
-.back-arrow {
-  display: flex;
-  align-items: center;
+  text-align: ;
   justify-content: center;
-  width: 38px;
-  height: 38px;
-  background: #fff;
-  border-radius: 50%;
-  box-shadow: 0 2px 8px rgba(106,27,154,0.10);
-  margin-right: 8px;
-}
-.back-arrow svg {
-  display: block;
-}
-.back-text {
-  font-size: 18px;
-  font-weight: 600;
-  letter-spacing: 0.5px;
 }
 
-
-/* MOBILE RESPONSIVE */
+/* ================= MOBILE RESPONSIVE ================= */
 
 @media (max-width: 768px) {
+
+  .projects-container {
+    padding: 15px 15px 100px 15px;
+  }
 
   .projects-table thead {
     display: none;
@@ -200,12 +221,13 @@ h2 {
     font-weight: bold;
   }
 
-  .projects-table td:nth-child(4)::before {
-    content: "";
-  }
-
   .view-btn {
     width: 100%;
     margin-top: 8px;
+  }
+
+  .back-btn-fixed {
+    width: 100%;
+    justify-content: center;
   }
 }
