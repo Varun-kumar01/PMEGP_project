@@ -11,12 +11,12 @@ export const getFullVerificationReport = async (req, res) => {
 
     let sql = `
       SELECT
-        a.applicant_id,
-        a.applicant_name,
-        a.mandal,
-        a.district,
-        a.product_desc_activity,
-        a.unit_address,
+        t.applicant_id,
+        t.applicant_name,
+        t.product_desc_activity,
+        t.unit_address,
+        t.taluk_block AS mandal,
+        t.unit_district AS district,
         a.working_status,
         a.not_working_status,
         a.shifted_status,
@@ -42,22 +42,23 @@ export const getFullVerificationReport = async (req, res) => {
         s.latitude AS shifted_latitude,
         s.longitude AS shifted_longitude,
         s.photo_paths AS shifted_photos
-      FROM applicant_verifications a
-      LEFT JOIN verification_working_details w ON a.applicant_id = w.applicant_id
-      LEFT JOIN verification_not_working_details nw ON a.applicant_id = nw.applicant_id
-      LEFT JOIN verification_shifted_details s ON a.applicant_id = s.applicant_id
-      WHERE a.district = ?
+      FROM total_district_data t
+      LEFT JOIN applicant_verifications a ON t.applicant_id = a.applicant_id
+      LEFT JOIN verification_working_details w ON t.applicant_id = w.applicant_id
+      LEFT JOIN verification_not_working_details nw ON t.applicant_id = nw.applicant_id
+      LEFT JOIN verification_shifted_details s ON t.applicant_id = s.applicant_id
+      WHERE UPPER(TRIM(t.unit_district)) = UPPER(TRIM(?))
     `;
 
     const params = [district];
 
     // Add mandal filter if provided
     if (mandal && mandal.trim() !== '') {
-      sql += ` AND a.mandal LIKE ?`;
-      params.push(`%${mandal}%`);
+      sql += ` AND UPPER(t.taluk_block) LIKE CONCAT('%', UPPER(?), '%')`;
+      params.push(mandal);
     }
 
-    sql += ` ORDER BY a.applicant_name ASC`;
+    sql += ` ORDER BY t.applicant_name ASC`;
 
     const [rows] = await pool.execute(sql, params);
 
