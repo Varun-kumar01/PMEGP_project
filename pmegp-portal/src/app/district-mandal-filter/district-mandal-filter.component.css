@@ -24,15 +24,24 @@
 }
 
 .main-container {
-  max-width: 1400px;
+  max-width: 95%;
   margin: 0 auto;
-  padding: 20px;
+  padding: 1 0px;
 }
 
 
 .filter-card {
-  margin-bottom: 24px;
+  margin-bottom: 10px;
   border-left: 5px solid #673ab7;
+  padding-bottom: 0 !important;
+}
+
+.filter-card mat-card-header {
+  padding-bottom: 2px !important;
+}
+
+.filter-card mat-card-content {
+  padding-bottom: 2px !important;
 }
 
 .filter-controls {
@@ -40,7 +49,7 @@
   gap: 20px;
   align-items: center;
   flex-wrap: wrap;
-  padding-top: 10px;
+  padding-top: 0 !important;
 }
 
 .load-btn {
@@ -55,7 +64,7 @@
   background: white;
 
 
-  max-height: 550px;
+  max-height: 5500px;
   overflow-y: auto;
   position: relative;
 }
@@ -133,13 +142,20 @@ th.mat-header-cell:nth-child(6) {
 
 .btn-group-toggle {
   display: flex;
-  gap: 8px;
+  gap: 6px;
 }
 
 .status-btn {
   min-width: 40px !important;
   line-height: 30px !important;
   padding: 0 12px !important;
+  font-weight: 150;
+  transition: all 0.3s ease;
+}
+
+.active-yes {
+  background-color: #2196f3 !important;
+  color: white !important;
 }
 
 .active-no {
