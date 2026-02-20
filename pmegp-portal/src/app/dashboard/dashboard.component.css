@@ -10,7 +10,7 @@
 /* --- Header Section --- */
 .header-section {
   background: #F0F8FF;
-  padding: 20px 0 40px;
+  padding: 15px 0 15px;
   text-align: center;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   position: relative;
@@ -38,7 +38,7 @@
 .leader-text { margin-top: 5px; color: #7B1E23; font-weight: 600; font-size: 0.85rem; }
 
 .minister-photo { position: absolute; right: 20px; top: 15px; width: 180px; text-align: center; }
-.minister-photo img { width: 135px; height: 135px; border-radius: 50%; object-fit: cover; border: 3px solid white; box-shadow: 0 2px 8px rgba(0,0,0,0.3); }
+.minister-photo img { width: 135px; height: 135px; border-radius: 50%; object-fit: fit; border: 3px solid white; box-shadow: 0 2px 8px rgba(0,0,0,0.3); }
 .minister-text { margin-top: 5px; color: #7B1E23; font-weight: 600; font-size: 0.85rem; }
 
 /* --- REDESIGNED HERO CAROUSEL --- */
