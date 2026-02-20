@@ -69,7 +69,6 @@
           <th>Activity / Product</th>
           <th>Unit Address</th>
           <th>Unit Working</th>
-          <th>Unit Not Working</th>
           <th>Unit Shifted</th>
         </tr>
       </thead>
@@ -84,24 +83,24 @@
           <td>{{ r.product_desc_activity }}</td>
           <td>{{ r.unit_address }}</td>
           <td>
-            <button *ngIf="r.working_status && r.working_status.toLowerCase() !== 'no'" 
+            <button *ngIf="r.working_status === 'YES'" 
                     mat-stroked-button color="primary" (click)="openDetailModal(r, 'working')">
               Working
             </button>
-          </td>
-
-          <td>
-            <button *ngIf="r.not_working_status && r.not_working_status.toLowerCase() !== 'no'" 
+            <button *ngIf="r.not_working_status === 'YES'" 
                     mat-stroked-button color="warn" (click)="openDetailModal(r, 'notWorking')">
               Not Working
             </button>
+            <span *ngIf="!r.working_status && !r.not_working_status" class="status-dash">-</span>
           </td>
 
           <td>
-            <button *ngIf="r.shifted_status && r.shifted_status.toLowerCase() !== 'no'" 
+            <button *ngIf="r.shifted_status === 'YES'" 
                     mat-stroked-button color="accent" (click)="openDetailModal(r, 'shifted')">
               Shifted
             </button>
+            <span *ngIf="r.shifted_status === 'NO'" class="status-badge status-no">NO</span>
+            <span *ngIf="!r.shifted_status" class="status-dash">-</span>
           </td>
         </tr>
       </tbody>
