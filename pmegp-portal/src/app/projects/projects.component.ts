@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../environments/environment';
-import { Location } from '@angular/common';
 import { Router } from '@angular/router';
 
 @Component({
@@ -17,24 +16,22 @@ export class ProjectsComponent implements OnInit {
   projects: any[] = [];
   loading = true;
 
-  // ✅ Pagination
   currentPage = 1;
-  pageSize = 10;
+  pageSize = 50;
 
   private apiUrl = environment.apiUrl;
 
   constructor(
     private http: HttpClient,
-    private location: Location,
     private router: Router
   ) {}
 
-  goBack() {
-    this.router.navigate(['/dashboard']);
-  }
-
   ngOnInit(): void {
     this.getProjects();
+  }
+
+  goBack() {
+    this.router.navigate(['/dashboard']);
   }
 
   getProjects() {
@@ -51,7 +48,7 @@ export class ProjectsComponent implements OnInit {
       });
   }
 
-  // ✅ Pagination Logic
+  /* ===== PAGINATION ===== */
 
   get totalPages(): number {
     return Math.ceil(this.projects.length / this.pageSize);
@@ -78,6 +75,9 @@ export class ProjectsComponent implements OnInit {
   }
 
   viewProject(file: string) {
-    window.open(`${this.apiUrl.replace('/api','')}/uploads/projects/${file}`, '_blank');
+    window.open(
+      `${this.apiUrl.replace('/api','')}/uploads/projects/${file}`,
+      '_blank'
+    );
   }
 }
