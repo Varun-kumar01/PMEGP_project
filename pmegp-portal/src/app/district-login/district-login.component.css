@@ -150,7 +150,7 @@
 }
 
 .login-btn:disabled {
-  background-color: #b0d8ff;
+  background-color: #4b98e5;
   color: #f0f8ff;
   cursor: not-allowed;
   box-shadow: none;
@@ -201,11 +201,11 @@
 
 .back-btn {
   background-color: transparent;
-  color: #6c757d;
+  color: #252628;
   font-weight: 500;
 }
 
 .back-btn:hover {
   background-color: #f8f9fa;
-  color: #333;
+  color: #56593c;
 }
