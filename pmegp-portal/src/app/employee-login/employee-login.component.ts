@@ -49,7 +49,16 @@ export class EmployeeLoginComponent {
       },
       error: (error) => {
         this.isLoading = false;
-        this.errorMessage = error; 
+        // Extract error message from different error formats
+        if (error.error?.message) {
+          this.errorMessage = error.error.message;
+        } else if (error.message) {
+          this.errorMessage = error.message;
+        } else if (typeof error === 'string') {
+          this.errorMessage = error;
+        } else {
+          this.errorMessage = 'Login failed. Please check your credentials.';
+        }
       }
     });
   }
