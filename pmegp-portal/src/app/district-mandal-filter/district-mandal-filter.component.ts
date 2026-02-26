@@ -105,7 +105,6 @@ export class DistrictMandalFilterComponent implements OnInit {
     'product_desc', 
     'unit_address', 
     'unit_working', 
-    'unit_not_working', 
     'unit_shifted', 
     'actions'
   ];
@@ -199,12 +198,26 @@ export class DistrictMandalFilterComponent implements OnInit {
   initializeStatuses(rows: ApplicantRow[]) {
     this.rowVerificationStatus.clear();
     rows.forEach(a => {
-      this.rowVerificationStatus.set(a.applicant_id, {
+      // Try to load from localStorage first
+      const saved = this.loadStatusFromStorage(a.applicant_id);
+      this.rowVerificationStatus.set(a.applicant_id, saved || {
         working_status: null,
         not_working_status: null,
         shifted_status: null
       });
     });
+  }
+
+  saveStatusToStorage(applicantId: string) {
+    const status = this.rowVerificationStatus.get(applicantId);
+    if (status) {
+      localStorage.setItem(`verification_${applicantId}`, JSON.stringify(status));
+    }
+  }
+
+  loadStatusFromStorage(applicantId: string) {
+    const saved = localStorage.getItem(`verification_${applicantId}`);
+    return saved ? JSON.parse(saved) : null;
   }
 
   openModal(applicant: ApplicantRow, type: 'working' | 'notWorking' | 'shifted') {
@@ -226,10 +239,73 @@ export class DistrictMandalFilterComponent implements OnInit {
     this.shiftedPhotoPreview = [];
     this.shiftedError = null;
 
+    // Load existing data from backend if available
+    this.loadExistingVerificationData(applicant.applicant_id, type);
+
     // Initialize map after modal is rendered
     setTimeout(() => {
       this.initializeMap();
     }, 100);
+  }
+
+  loadExistingVerificationData(applicantId: string, type: 'working' | 'notWorking' | 'shifted') {
+    // Load from localStorage first
+    if (type === 'working') {
+      const saved = localStorage.getItem(`working_form_${applicantId}`);
+      if (saved) {
+        try {
+          const data = JSON.parse(saved);
+          this.workingFormData = {
+            ...this.workingFormData,
+            unitSector: data.unitSector || '',
+            unitName: data.unitName || '',
+            productsCost: data.productsCost || '',
+            marketing: data.marketing || '',
+            employees: data.employees || null,
+            annualProduction: data.annualProduction || null,
+            productionValue: data.productionValue || null,
+            annualTurnover: data.annualTurnover || null,
+            latitude: data.latitude || null,
+            longitude: data.longitude || null
+          };
+          console.log('Loaded working form data from localStorage');
+        } catch (e) {
+          console.error('Error parsing working form data:', e);
+        }
+      }
+    } else if (type === 'notWorking') {
+      const saved = localStorage.getItem(`notworking_form_${applicantId}`);
+      if (saved) {
+        try {
+          const data = JSON.parse(saved);
+          this.notWorkingFormData = {
+            ...this.notWorkingFormData,
+            remarks: data.remarks || '',
+            latitude: data.latitude || null,
+            longitude: data.longitude || null
+          };
+          console.log('Loaded not working form data from localStorage');
+        } catch (e) {
+          console.error('Error parsing not working form data:', e);
+        }
+      }
+    } else if (type === 'shifted') {
+      const saved = localStorage.getItem(`shifted_form_${applicantId}`);
+      if (saved) {
+        try {
+          const data = JSON.parse(saved);
+          this.shiftedFormData = {
+            ...this.shiftedFormData,
+            newAddress: data.newAddress || '',
+            latitude: data.latitude || null,
+            longitude: data.longitude || null
+          };
+          console.log('Loaded shifted form data from localStorage');
+        } catch (e) {
+          console.error('Error parsing shifted form data:', e);
+        }
+      }
+    }
   }
 
   closeModal() {
@@ -444,6 +520,21 @@ export class DistrictMandalFilterComponent implements OnInit {
       formData.append("working_photos", file)
     );
 
+    // Save form data to localStorage for retrieval later
+    const workingDataToSave = {
+      unitSector: this.workingFormData.unitSector,
+      unitName: this.workingFormData.unitName,
+      productsCost: this.workingFormData.productsCost,
+      marketing: this.workingFormData.marketing,
+      employees: this.workingFormData.employees,
+      annualProduction: this.workingFormData.annualProduction,
+      productionValue: this.workingFormData.productionValue,
+      annualTurnover: this.workingFormData.annualTurnover,
+      latitude: this.workingFormData.latitude,
+      longitude: this.workingFormData.longitude
+    };
+    localStorage.setItem(`working_form_${applicantId}`, JSON.stringify(workingDataToSave));
+
     formData.append("data", JSON.stringify({
       applicant_id: applicantId,
       working_form: {
@@ -474,6 +565,7 @@ export class DistrictMandalFilterComponent implements OnInit {
           st.not_working_status = null;
           st.shifted_status = null;
           this.rowVerificationStatus.set(applicantId, st);
+          this.saveStatusToStorage(applicantId);
           this.closeModal();
         },
         error: (err) => {
@@ -498,6 +590,14 @@ export class DistrictMandalFilterComponent implements OnInit {
       );
     }
 
+    // Save form data to localStorage
+    const notWorkingDataToSave = {
+      remarks: this.notWorkingFormData.remarks,
+      latitude: this.notWorkingFormData.latitude,
+      longitude: this.notWorkingFormData.longitude
+    };
+    localStorage.setItem(`notworking_form_${applicantId}`, JSON.stringify(notWorkingDataToSave));
+
     formData.append("data", JSON.stringify({
       applicant_id: applicantId,
       remarks: this.notWorkingFormData.remarks,
@@ -519,6 +619,7 @@ export class DistrictMandalFilterComponent implements OnInit {
           st.working_status = null;
           st.shifted_status = null;
           this.rowVerificationStatus.set(applicantId, st);
+          this.saveStatusToStorage(applicantId);
           this.closeModal();
         },
         error: (err) => {
@@ -547,6 +648,14 @@ export class DistrictMandalFilterComponent implements OnInit {
       );
     }
 
+    // Save form data to localStorage
+    const shiftedDataToSave = {
+      newAddress: this.shiftedFormData.newAddress,
+      latitude: this.shiftedFormData.latitude,
+      longitude: this.shiftedFormData.longitude
+    };
+    localStorage.setItem(`shifted_form_${applicantId}`, JSON.stringify(shiftedDataToSave));
+
     formData.append("data", JSON.stringify({
       applicant_id: applicantId,
       new_address: this.shiftedFormData.newAddress,
@@ -568,6 +677,7 @@ export class DistrictMandalFilterComponent implements OnInit {
           st.working_status = null;
           st.not_working_status = null;
           this.rowVerificationStatus.set(applicantId, st);
+          this.saveStatusToStorage(applicantId);
           this.closeModal();
         },
         error: (err) => {
@@ -580,15 +690,28 @@ export class DistrictMandalFilterComponent implements OnInit {
   sendNoStatus(applicant: ApplicantRow, type: any) {
     const st = this.rowVerificationStatus.get(applicant.applicant_id)!;
 
-    if (type === "working") st.working_status = "NO";
-    if (type === "notWorking") st.not_working_status = "NO";
-    if (type === "shifted") st.shifted_status = "NO";
+    if (type === "working") {
+      st.working_status = st.working_status === "NO" ? null : "NO";
+    }
+    if (type === "notWorking") {
+      st.not_working_status = st.not_working_status === "NO" ? null : "NO";
+    }
+    if (type === "shifted") {
+      st.shifted_status = st.shifted_status === "NO" ? null : "NO";
+    }
 
     this.rowVerificationStatus.set(applicant.applicant_id, st);
+    this.saveStatusToStorage(applicant.applicant_id); // Save to localStorage
   }
 
   submitRowVerification(applicant: ApplicantRow) {
     const status = this.rowVerificationStatus.get(applicant.applicant_id)!;
+
+    // Check if all statuses are null/unselected
+    if (!status.working_status && !status.not_working_status && !status.shifted_status) {
+      alert("Please select at least one option (Yes/No) before submitting.");
+      return;
+    }
 
     const payload = {
       applicant_id: applicant.applicant_id,
@@ -605,7 +728,10 @@ export class DistrictMandalFilterComponent implements OnInit {
 
     this.http.post(`${this.apiUrl}/verification/submit`, payload)
       .subscribe({
-        next: () => alert("Verification status saved."),
+        next: () => {
+          alert("Verification status saved.");
+          this.saveStatusToStorage(applicant.applicant_id); // Save to localStorage
+        },
         error: () => alert("Error saving verification status.")
       });
   }
