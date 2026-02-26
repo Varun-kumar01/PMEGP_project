@@ -15,35 +15,43 @@ html, body {
   width: 100%;
   background: #fff;
   display: flex;
-  justify-content: flex-end;
+  justify-content: flex-start;
   align-items: center;
-  padding-right: 20px;
+  padding-left: 20px;
   z-index: 1000;
   border-bottom: 1px solid #ddd;
 }
 
 
+
 .back-btn-fixed {
-  position: fixed;          /* stay fixed */
-  top: 15px;                /* distance from top */
-  right: 20px;              /* distance from right */
-  
+  position: fixed;
+  top: 15px;
+  left: 20px;
+
   display: flex;
   align-items: center;
-  gap: 8px;
+  justify-content: center;
 
-  padding: 8px 16px;
-  background: #2196f3;      /* blue color */
+  width: 80px;          /* ✅ fixed width */
+  height: 37px;          /* ✅ fixed height */
+
+  padding: 0 12px;       /* small padding */
+  background: #887854;
   color: #fff;
 
   border: none;
-  border-radius: 25px;
-  font-size: 14px;
+  border-radius: 20px;
+  font-size: 13px;
   font-weight: 600;
   cursor: pointer;
 
+  overflow: hidden;      /* ✅ prevent expanding */
+  white-space: nowrap;   /* ✅ prevent wrapping */
+  text-overflow: ellipsis;
+
   transition: all 0.3s ease;
-  z-index: 2000;            /* above table */
+  z-index: 2000;
 }
 
 
