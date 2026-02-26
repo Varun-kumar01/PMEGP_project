@@ -6,7 +6,8 @@ import {
   uploadPmegData, 
   uploadAgencyDetailData,
   getDistrictData,          
-  uploadKvibData
+  uploadKvibData,
+  getDateRange
 } from "../controllers/pmegController.js";
 
 const router = express.Router();
@@ -18,6 +19,7 @@ const upload = multer({ storage: storage });
 
 router.get("/", getPmegData);
 
+router.get("/date-range", getDateRange);
 
 router.post("/upload", upload.single("mainExcel"), uploadPmegData);
 

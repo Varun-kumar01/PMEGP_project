@@ -18,6 +18,8 @@ export class PmegDashboardComponent implements OnInit {
   
   tableData: any[] = [];
   totals: any = {};
+  fromDate: string = '';
+  toDate: string = '';
 
 
 
@@ -33,7 +35,30 @@ export class PmegDashboardComponent implements OnInit {
   ngOnInit(): void {
 
     this.loadPmegData();
+    this.loadDateRange();
  
+  }
+
+  loadDateRange(): void {
+    this.dataService.getDateRange().subscribe({
+      next: (data: any) => {
+        this.fromDate = this.formatDate(data.fromDate);
+        this.toDate = this.formatDate(data.toDate);
+        console.log('Successfully fetched date range:', data);
+      },
+      error: (err: any) => {
+        console.error('Error fetching date range:', err);
+      }
+    });
+  }
+
+  formatDate(date: any): string {
+    if (!date) return '';
+    const d = new Date(date);
+    const day = String(d.getDate()).padStart(2, '0');
+    const month = String(d.getMonth() + 1).padStart(2, '0');
+    const year = d.getFullYear();
+    return `${day}-${month}-${year}`;
   }
 
   loadPmegData(): void {
@@ -95,3 +120,4 @@ export class PmegDashboardComponent implements OnInit {
   }
 
 }
+
