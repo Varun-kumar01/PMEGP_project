@@ -1,87 +1,150 @@
 <div class="projects-container">
-  <div *ngIf="loading" class="loading">Loading projects...</div>
-  
-  <div class="projects-header">
+
+  <!-- Loading -->
+  <div *ngIf="loading" class="loading">
+    Loading projects...
+  </div>
+
+  <!-- Header -->
+  <!-- <div class="projects-header">
+
+    <button class="back-btn" (click)="goBack()">
+      ← Back
+    </button>
+
     <h2>PMEGP Project Library</h2>
-    <!-- Back Button (to previous route) -->
-    <!-- Fixed Back Button at Bottom Left -->
-    <button class="back-btn-fixed" (click)="goBack()">
-      
-      <span class="back-arrow">
-        <svg
-          width="24"
-          height="24"
-          viewBox="0 0 24 24"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <circle cx="12" cy="12" r="12" fill="#fff" />
-          <path
-            d="M13.5 8L9.5 12L13.5 16"
-            stroke="#6a1b9a"
-            stroke-width="2.2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          />
-        </svg>
+
+    Pagination in Header
+    <div *ngIf="!loading && totalPages > 1"
+         class="pagination-header">
+
+      <button
+        [disabled]="currentPage === 1"
+        (click)="setPage(currentPage - 1)">
+        &lt;
+      </button>
+
+      <span>
+        {{ startRecord }}–{{ endRecord }} of {{ projects.length }}
       </span>
-      <span class="back-text">Back</span>
+
+      <button
+        [disabled]="currentPage === totalPages"
+        (click)="setPage(currentPage + 1)">
+        &gt;
+      </button>
+
+    </div>
+<div class="projects-header">
+
+  <div class="header-left">
+    <button class="back-btn" (click)="goBack()">
+      ← Back
     </button>
   </div>
-  <table *ngIf="!loading && projects.length > 0" class="projects-table">
-    <thead>
-      <tr>
-        <th>Sr No</th>
-        <th>Project Name</th>
-        <th>Project Cost</th>
-        <th>View</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let project of paginatedProjects; let i = index">
-        <td>{{ (currentPage - 1) * pageSize + i + 1 }}</td>
-        <td>{{ project.title }}</td>
-        <td>₹ {{ project.cost | number }}</td>
-        <td>
-          <button class="view-btn" (click)="viewProject(project.file_name)">
-            View
-          </button>
-        </td>
-      </tr>
-    </tbody>
-  </table>
 
+  <div class="header-center">
+    <h2>PMEGP Project Library</h2>
+  </div>
 
-      <!-- Fixed Pagination Controls at Bottom Center -->
-       
-      <div *ngIf="!loading && projects.length > 0" class="pagination-fixed">
-        <div class="pagination-container">
-          <!-- Left Arrow -->
-          <div
-            class="pagination-box"
-            [class.disabled]="currentPage === 1"
-            (click)="setPage(currentPage - 1)"
-          >
-            &lt;
-          </div>
+  <div class="header-right" *ngIf="!loading">
+    <div class="pagination-header">
 
-          <!-- Showing Count -->
-          <div class="pagination-info">
-            {{ startRecord }}–{{ endRecord }} of {{ projects.length }}
-          </div>
+      <button
+        [disabled]="currentPage === 1"
+        (click)="setPage(currentPage - 1)">
+        &lt;
+      </button>
 
-          <!-- Right Arrow -->
-          <div
-            class="pagination-box"
-            [class.disabled]="currentPage === totalPages"
-            (click)="setPage(currentPage + 1)"
-          >
-            &gt;
-          </div>
-        </div>
-      </div>
+      <span>
+        {{ startRecord }}–{{ endRecord }} of {{ projects.length }}
+      </span>
 
-  <div *ngIf="!loading && projects.length === 0" class="no-data">
+      <button
+        [disabled]="currentPage === totalPages"
+        (click)="setPage(currentPage + 1)">
+        &gt;
+      </button>
+
+    </div>
+  </div>
+
+</div>
+  </div> -->
+<div class="projects-header">
+
+  <div class="header-left">
+    <button class="back-btn" (click)="goBack()">
+      ← Back
+    </button>
+  </div>
+
+  <div class="header-center">
+    <h2>PMEGP Project Library</h2>
+  </div>
+  <!-- -- pagenation in headerr -->
+
+  <div class="header-right" *ngIf="!loading">
+    <div class="pagination-header">
+
+      <button
+        [disabled]="currentPage === 1"
+        (click)="setPage(currentPage - 1)">
+        &lt;
+      </button>
+
+      <span>
+        {{ startRecord }}–{{ endRecord }} of {{ projects.length }}
+      </span>
+
+      <button
+        [disabled]="currentPage === totalPages"
+        (click)="setPage(currentPage + 1)" >
+        &gt;
+      </button>
+
+    </div>
+  </div>
+
+</div>
+
+  <!-- Table -->
+  <div class="table-container">
+
+    <table *ngIf="!loading && projects.length > 0"
+           class="projects-table">
+
+      <thead>
+        <tr>
+          <th>Sr No</th>
+          <th>Project Name</th>
+          <th>Project Cost</th>
+          <th>View</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr *ngFor="let project of paginatedProjects; let i = index">
+          <td>{{ (currentPage - 1) * pageSize + i + 1 }}</td>
+          <td>{{ project.title }}</td>
+          <td>₹ {{ project.cost | number }}</td>
+          <td>
+            <button class="view-btn"
+                    (click)="viewProject(project.file_name)">
+              View
+            </button>
+          </td>
+        </tr>
+      </tbody>
+
+    </table>
+
+  </div>
+
+  <!-- No Data -->
+  <div *ngIf="!loading && projects.length === 0"
+       class="no-data">
     No projects uploaded yet.
   </div>
+
 </div>
