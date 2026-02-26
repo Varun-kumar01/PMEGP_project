@@ -31,13 +31,19 @@
           placeholder="Enter Password">
       </div>
 
-
       <div class="form-actions">
-        <button type="submit" class="login-btn" [disabled]="!loginForm.form.valid || isLoading">
+        <button 
+          type="submit" 
+          class="login-btn" 
+          [disabled]="!loginForm.form.valid || isLoading">
           <span *ngIf="!isLoading">Login</span>
           <span *ngIf="isLoading">Logging in...</span>
         </button>
-        <button type="button" class="reset-btn" (click)="resetForm()">
+
+        <button 
+          type="button" 
+          class="reset-btn" 
+          (click)="resetForm()">
           Reset
         </button>
       </div>
@@ -47,13 +53,23 @@
       </div>
 
       <div class="login-links">
-        <!-- <a href="#" class="forgot-password" (click)="onForgotPassword()">Forgot Password?</a> -->
-        <!-- <a href="#" class="new-registration" (click)="onNewRegistration(); $event.preventDefault()">New Registration</a> -->
+        <!--
+        <a href="#" class="forgot-password" (click)="onForgotPassword()">
+          Forgot Password?
+        </a>
+        <a href="#" class="new-registration" 
+           (click)="onNewRegistration(); $event.preventDefault()">
+          New Registration
+        </a>
+        -->
       </div>
+
     </form>
   </div>
 
   <div class="back-to-dashboard">
-    <button class="back-btn" routerLink="/dashboard">← Back to Dashboard</button>
+    <button class="back-btn" routerLink="/dashboard">
+      ← Back to Dashboard
+    </button>
   </div>
 </div>
