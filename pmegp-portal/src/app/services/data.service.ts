@@ -14,4 +14,8 @@ export class DataService {
   getPmegData(): Observable<any[]> {
     return this.http.get<any[]>(this.apiUrl);
   }
+
+  getDateRange(): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/date-range`);
+  }
 }
