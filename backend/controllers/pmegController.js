@@ -394,3 +394,28 @@ export const uploadKvibData = async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 };
+
+export const getDateRange = async (req, res) => {
+  try {
+    const query = `
+      SELECT 
+        MIN(online_submission_date) as minDate,
+        MAX(online_submission_date) as maxDate
+      FROM total_district_data
+    `;
+
+    const [results] = await db.query(query);
+    
+    if (results && results.length > 0) {
+      res.json({
+        fromDate: results[0].minDate,
+        toDate: results[0].maxDate
+      });
+    } else {
+      res.json({ fromDate: null, toDate: null });
+    }
+  } catch (err) {
+    console.error("Database error fetching date range:", err);
+    return res.status(500).json({ message: "Database error" });
+  }
+};
