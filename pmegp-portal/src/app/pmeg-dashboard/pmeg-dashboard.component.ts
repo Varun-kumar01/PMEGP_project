@@ -131,12 +131,15 @@ export class PmegDashboardComponent implements OnInit {
 }
 
  
-  onAgencyClick(event: Event, row: any) {
+  onAgencyClick(event: Event, row: any, columnKey: string) {
     event.preventDefault(); 
     
-    // Navigate with both district name and year
+    // Navigate with district name, year, and columnKey
     this.router.navigate(['/details', row.name], { 
-      queryParams: { year: this.selectedYear } 
+      queryParams: { 
+        year: this.selectedYear,
+        columnKey: columnKey
+      } 
     }); 
   }
 
