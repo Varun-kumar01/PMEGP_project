@@ -69,25 +69,25 @@
     <tbody>
       <tr *ngFor="let row of tableData">
         <td class="sticky-col sticky-col-1">{{ row.rowNo }}</td>
-        <td class="sticky-col sticky-col-2 clickable" (click)="onAgencyClick($event, row)">{{ row.name }}</td>
+        <td class="sticky-col sticky-col-2 clickable" (click)="onAgencyClick($event, row, 'name')">{{ row.name }}</td>
 
-        <td class="clickable" (click)="onAgencyClick($event, row)">
+        <td class="clickable" (click)="onAgencyClick($event, row, 'agencyReceived')">
           {{ row.agencyReceived }}
         </td>
 
-        <td class="clickable" (click)="onAgencyClick($event, row)">{{ row.agencyReturned }}</td>
-        <td class="clickable" (click)="onAgencyClick($event, row)">{{ row.Pending_At_Agency }}</td>
-        <td class="clickable" (click)="onAgencyClick($event, row)">{{ row.Forwarded_to_Bank }}</td>
-        <td class="clickable" (click)="onAgencyClick($event, row)">{{ row.sanctionedPrj }}</td>
+        <td class="clickable" (click)="onAgencyClick($event, row, 'agencyReturned')">{{ row.agencyReturned }}</td>
+        <td class="clickable" (click)="onAgencyClick($event, row, 'Pending_At_Agency')">{{ row.Pending_At_Agency }}</td>
+        <td class="clickable" (click)="onAgencyClick($event, row, 'Forwarded_to_Bank')">{{ row.Forwarded_to_Bank }}</td>
+        <td class="clickable" (click)="onAgencyClick($event, row, 'sanctionedPrj')">{{ row.sanctionedPrj }}</td>
         <td>{{ row.sanctionedLakh }}</td>
-        <td class="clickable" (click)="onAgencyClick($event, row)">{{ row.claimedPrj }}</td>
+        <td class="clickable" (click)="onAgencyClick($event, row, 'claimedPrj')">{{ row.claimedPrj }}</td>
         <td >{{ row.claimedLakh }}</td>
-        <td class="clickable" (click)="onAgencyClick($event, row)">{{ row.disbursementPrj }}</td>
+        <td class="clickable" (click)="onAgencyClick($event, row, 'disbursementPrj')">{{ row.disbursementPrj }}</td>
         <td >{{ row.disbursementLakh }}</td>
-        <td class="clickable" (click)="onAgencyClick($event, row)">{{ row.bankReturned }}</td>
-        <td class="clickable" (click)="onAgencyClick($event, row)">{{ row.pendingBankPrj }}</td>
+        <td class="clickable" (click)="onAgencyClick($event, row, 'bankReturned')">{{ row.bankReturned }}</td>
+        <td class="clickable" (click)="onAgencyClick($event, row, 'pendingBankPrj')">{{ row.pendingBankPrj }}</td>
         <td >{{ row.pendingBankLakh }}</td>
-        <td class="clickable" (click)="onAgencyClick($event, row)">{{ row.pendingDisbursementPrj }}</td>
+        <td class="clickable" (click)="onAgencyClick($event, row, 'pendingDisbursementPrj')">{{ row.pendingDisbursementPrj }}</td>
         <td >{{ row.pendingDisbursementLakh }}</td>
       </tr>
 
