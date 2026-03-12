@@ -12,6 +12,7 @@ import { AdminComponent } from './admin/admin.component';
 import { SecondTableComponent } from './second-table/second-table.component';
 import { PhysicalVerificationFormComponent } from './physical-verification-form/physical-verification-form.component';
 import { ReportComponent } from './report/report.component';
+import { PmegpReportComponent } from './pmegp-report/pmegp-report.component';
 
 import { DistrictMandalFilterComponent } from './district-mandal-filter/district-mandal-filter.component'; 
 import { CbcDataTableComponent } from './cbc-data-table/cbc-data-table.component';
@@ -64,6 +65,10 @@ export const routes: Routes = [
     path: 'report',
     component: ReportComponent,
     canActivate: [employeeAuthGuard] 
+  },
+  {
+    path: 'pmegp-report',
+    component: PmegpReportComponent
   },
   { 
   path: 'cbc-data-table', 

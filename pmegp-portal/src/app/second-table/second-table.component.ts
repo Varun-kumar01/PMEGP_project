@@ -13,6 +13,7 @@ import { environment } from '../../environments/environment';
 })
 export class SecondTableComponent implements OnInit {
   clickedRowName: string | null = null;
+  selectedYear: string | null = null;
   secondTableData: any[] = [];
   isLoading = true;
   errorMessage: string | null = null;
@@ -27,15 +28,29 @@ export class SecondTableComponent implements OnInit {
     this.route.params.subscribe((params) => {
       this.clickedRowName = params['name'];
       if (this.clickedRowName) {
-        this.fetchDistrictData(this.clickedRowName);
+        this.route.queryParams.subscribe((queryParams) => {
+          this.selectedYear = queryParams['year'] || null;
+          this.fetchDistrictData(this.clickedRowName, this.selectedYear);
+        });
       }
     });
   }
 
-  fetchDistrictData(districtName: string): void {
+  fetchDistrictData(districtName: string | null, year?: string | null): void {
+    if (!districtName) {
+      this.errorMessage = 'District name is not available.';
+      this.isLoading = false;
+      return;
+    }
+
     this.isLoading = true;
     this.errorMessage = null;
-    const apiUrl = `${environment.apiUrl}/pmeg-data/data/${districtName}`;
+    
+    // Build API URL with year parameter if available
+    let apiUrl = `${environment.apiUrl}/pmeg-data/data/${districtName}`;
+    if (year) {
+      apiUrl += `?year=${year}`;
+    }
 
     this.http.get<any[]>(apiUrl).subscribe({
       next: (data) => {
