@@ -3,6 +3,7 @@ import multer from "multer";
 
 import { 
   getPmegData, 
+  getPmegDataByYear,
   uploadPmegData, 
   uploadAgencyDetailData,
   getDistrictData,          
@@ -19,6 +20,8 @@ const upload = multer({ storage: storage });
 
 router.get("/", getPmegData);
 
+router.get("/year/:year", getPmegDataByYear);
+
 router.get("/date-range", getDateRange);
 
 router.post("/upload", upload.single("mainExcel"), uploadPmegData);
@@ -28,6 +31,8 @@ router.post("/upload-detail", upload.single("file"), uploadAgencyDetailData);
 
 
 router.get("/data/:district", getDistrictData);
+
+router.get("/data-by-year/:district", getDistrictData);
 
 
 router.post("/upload-kvib", upload.single("kvibFile"), uploadKvibData);
