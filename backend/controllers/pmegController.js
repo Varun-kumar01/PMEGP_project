@@ -316,38 +316,53 @@ export const uploadAgencyDetailData = async (req, res) => {
 
 
 export const getDistrictData = async (req, res) => {
+
   const { district } = req.params;
-  const { year, columnKey } = req.query; 
+  const { year, columnKey } = req.query;
 
   try {
-    // 1. Map the columnKey to the CORRECT specific table
-    let targetTable = "total_district_data"; // Default table
 
-    if (columnKey) {
-      switch (columnKey) {
-        case "agencyReceived":
-          targetTable = "your_actual_received_table_name"; // CHANGE THIS to your real table name
-          break;
-        case "agencyReturned":
-          targetTable = "your_actual_returned_table_name"; // CHANGE THIS
-          break;
-        case "Forwarded_to_Bank":
-          targetTable = "your_actual_forwarded_table_name"; // CHANGE THIS
-          break;
-        case "sanctionedPrj":
-          targetTable = "your_actual_sanctioned_table_name"; // CHANGE THIS
-          break;
-        // Add a case for every one of your 15 columns here
-        default:
-          // If columnKey is provided but doesn't match, return an error
-          return res.status(400).json({ message: `No table mapped for column: ${columnKey}` });
-      }
+    // Map dashboard column → database table
+    const tableMap = {
+
+      agencyReceived: "agency_received",
+
+      agencyReturned: "agency_returned",
+
+      Pending_At_Agency: "prnding_at_agency",
+
+      Forwarded_to_Bank: "forwarded_to_bank",
+
+      sanctionedPrj: "sanctioned_by_bank_no_of_proj",
+
+      claimedPrj: "mm_claimed_no_of_proj",
+
+      disbursementPrj: "mm_disbursement_no_of_proj",
+
+      pendingBankPrj: "pending_at_bank_no_of_proj",
+
+      pendingDisbursementPrj: "pending_for_mm_disbursement_no_of_proj",
+
+      physicalVerification: "physical_verification_data"
+
+    };
+
+    // Get table name from columnKey
+    const targetTable = tableMap[columnKey];
+
+    if (!targetTable) {
+      return res.status(400).json({
+        message: `Invalid columnKey: ${columnKey}`
+      });
     }
 
-    // 2. Build the query with the mapped table name
-    // We use string interpolation for the table name because SQL parameters (?) 
-    // only work for VALUES, not TABLE names.
-    let query = `SELECT * FROM ${targetTable} WHERE unit_district = ?`;
+    // Build query
+    let query = `
+      SELECT *
+      FROM ${targetTable}
+      WHERE unit_district = ?
+    `;
+
     const params = [district];
 
     if (year) {
@@ -358,15 +373,20 @@ export const getDistrictData = async (req, res) => {
     query += ` ORDER BY applicant_id ASC`;
 
     const [rows] = await db.query(query, params);
-    return res.json(rows);
+
+    res.json(rows);
 
   } catch (error) {
+
     console.error("District Fetch Error:", error.message);
+
     res.status(500).json({
       message: "Database error fetching district data",
       error: error.message
     });
+
   }
+
 };
 
 export const uploadKvibData = async (req, res) => {
