@@ -1,0 +1,31 @@
+<button class="back-btn-fixed" routerLink="/dashboard">
+  <span class="back-arrow">‹</span>
+  <span class="back-text">Back</span>
+</button>
+
+<mat-card class="report-card">
+  <mat-card-header>
+    <mat-card-title>PMEGP Report</mat-card-title>
+    <mat-card-subtitle>Select a year to generate report</mat-card-subtitle>
+  </mat-card-header>
+  
+  <mat-card-content class="report-content">
+    <mat-form-field appearance="outline" class="year-field">
+      <mat-label>Select Year</mat-label>
+      <mat-select [(ngModel)]="selectedYear">
+        <mat-option *ngFor="let year of years" [value]="year">
+          {{ year }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+  </mat-card-content>
+  
+  <mat-card-actions>
+    <button mat-raised-button color="primary" (click)="getReport()" [disabled]="isLoading">
+      <span *ngIf="!isLoading">Get Report</span>
+      <span *ngIf="isLoading" class="button-spinner">
+        <mat-progress-spinner mode="indeterminate" diameter="20"></mat-progress-spinner>
+      </span>
+    </button>
+  </mat-card-actions>
+</mat-card>

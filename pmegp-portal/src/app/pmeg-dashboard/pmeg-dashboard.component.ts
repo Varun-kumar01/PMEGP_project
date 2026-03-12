@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute, RouterLink } from '@angular/router';
 
 
 import { DataService } from '../services/data.service';
@@ -9,7 +9,7 @@ import { DataService } from '../services/data.service';
 @Component({
   selector: 'app-pmeg-dashboard',
   standalone: true,
-  imports: [CommonModule, HttpClientModule],
+  imports: [CommonModule, HttpClientModule, RouterLink],
   templateUrl: './pmeg-dashboard.component.html',
   styleUrls: ['./pmeg-dashboard.component.css']
 })
@@ -20,12 +20,14 @@ export class PmegDashboardComponent implements OnInit {
   totals: any = {};
   fromDate: string = '';
   toDate: string = '';
+  selectedYear: string | null = null;
 
 
 
   constructor(
     private dataService: DataService,
-    private router: Router 
+    private router: Router,
+    private route: ActivatedRoute
   ) { }
 
   goBack() {
@@ -33,10 +35,12 @@ export class PmegDashboardComponent implements OnInit {
   }
 
   ngOnInit(): void {
-
-    this.loadPmegData();
-    this.loadDateRange();
- 
+    // Get year from query parameters
+    this.route.queryParams.subscribe(params => {
+      this.selectedYear = params['year'] || null;
+      this.loadPmegData();
+      this.loadDateRange();
+    });
   }
 
   loadDateRange(): void {
@@ -62,16 +66,31 @@ export class PmegDashboardComponent implements OnInit {
   }
 
   loadPmegData(): void {
-    this.dataService.getPmegData().subscribe({
-      next: (data: any) => {
-        this.tableData = data;
-        this.calculateTotals();   // ⭐ ADD THIS LINE
-        console.log('Successfully fetched PMEG data:', data);
-      },
-      error: (err: any) => {
-        console.error('Error fetching PMEG data:', err);
-      }
-    });
+    // If year is selected, fetch data for that specific year from backend
+    if (this.selectedYear) {
+      this.dataService.getPmegDataByYear(this.selectedYear).subscribe({
+        next: (data: any) => {
+          this.tableData = data;
+          this.calculateTotals();
+          console.log(`Successfully fetched PMEG data for year ${this.selectedYear}:`, data);
+        },
+        error: (err: any) => {
+          console.error('Error fetching PMEG data by year:', err);
+        }
+      });
+    } else {
+      // If no year selected, fetch all data
+      this.dataService.getPmegData().subscribe({
+        next: (data: any) => {
+          this.tableData = data;
+          this.calculateTotals();
+          console.log('Successfully fetched PMEG data:', data);
+        },
+        error: (err: any) => {
+          console.error('Error fetching PMEG data:', err);
+        }
+      });
+    }
   }
 
   calculateTotals(): void {
@@ -115,8 +134,10 @@ export class PmegDashboardComponent implements OnInit {
   onAgencyClick(event: Event, row: any) {
     event.preventDefault(); 
     
-
-    this.router.navigate(['/details', row.name]); 
+    // Navigate with both district name and year
+    this.router.navigate(['/details', row.name], { 
+      queryParams: { year: this.selectedYear } 
+    }); 
   }
 
 }

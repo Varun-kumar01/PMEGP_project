@@ -1,0 +1,96 @@
+.report-card {
+  max-width: 500px;
+  margin: 80px auto 20px;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Back Button Styling */
+.back-btn-fixed {
+  position: fixed;
+  top: 15px;
+  left: 20px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 80px;
+  height: 37px;
+
+  padding: 0 12px;
+  background: #887854;
+  color: #fff;
+
+  border: none;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+
+  transition: all 0.3s ease;
+  z-index: 2000;
+  text-decoration: none;
+  box-shadow: 0 4px 12px rgba(136, 120, 84, 0.3);
+}
+
+.back-btn-fixed:hover, .back-btn-fixed:focus {
+  background: #111111;
+  box-shadow: 0 10px 32px rgba(220, 10, 45, 0.22);
+  transform: translateY(-2px) scale(1.03);
+}
+
+.back-btn-fixed:active {
+  transform: translateY(0) scale(0.98);
+}
+
+.back-arrow {
+  width: 22px;
+  height: 22px;
+  background: #fff;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 4px;
+  color: #666;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.report-content {
+  padding: 20px 0;
+  display: flex;
+  justify-content: center;
+}
+
+.year-field {
+  width: 250px;
+  min-width: 200px;
+}
+
+mat-card-actions {
+  display: flex;
+  justify-content: center;
+  padding: 20px;
+}
+
+mat-card-actions button {
+  min-width: 150px;
+}
+
+.button-spinner {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+mat-card-header {
+  text-align: center;
+  margin-bottom: 20px;
+}

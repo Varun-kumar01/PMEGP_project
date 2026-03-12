@@ -1,17 +1,30 @@
 <div class="second-table-container">
   <button (click)="goBackToMainTable()">Back to Dashboard</button>
   
-  <h3 *ngIf="clickedRowName">Details for: {{ clickedRowName }}</h3>
+  <div class="filter-info">
+    <h3 *ngIf="clickedRowName">Details for: <strong>{{ clickedRowName }}</strong></h3>
+    <p *ngIf="selectedYear" class="year-filter"><strong>Year: {{ selectedYear }}</strong></p>
+  </div>
 
   <div class="table-scroll">
     <table>
       <thead>
         <tr>
           <th rowspan="2">Sno</th>
+          <th rowspan="2">ID</th>
+          <th rowspan="2">Current Status</th>
+          <th rowspan="2">Under Process Agency Reason</th>
+          <th rowspan="2">Office Name</th>
+          <th rowspan="2">Agency Type</th>
+          <th rowspan="2">State</th>
           <th rowspan="2">Applicant ID</th>
           <th rowspan="2">Applicant Name</th>
           <th rowspan="2">Applicant Address</th>
+          <th rowspan="2">Mobile No</th>
+          <th rowspan="2">Alternate Mobile</th>
           <th rowspan="2">Email</th>
+          <th rowspan="2">Aadhar No</th>
+          <th rowspan="2">Legal Status</th>
           <th rowspan="2">Gender</th>
           <th rowspan="2">Category</th>
           <th rowspan="2">Special Category</th>
@@ -29,17 +42,32 @@
           <th rowspan="2">Financing Branch IFSC</th>
           <th rowspan="2">Financing Branch Address</th>
           <th rowspan="2">Online Submission Date</th>
+          <th rowspan="2">DLTFEC Meeting</th>
+          <th rowspan="2">DLTFEC Meeting Place</th>
+          <th rowspan="2">Forwarding Date to Bank</th>
+          <th rowspan="2">Bank Remarks</th>
+          <th rowspan="2">Date of Documents Received at Bank</th>
           
+          <th colspan="3" class="group-header header-approved">Project Cost Approved</th>
           <th colspan="4" class="group-header header-sanctioned">Sanctioned by Bank</th>
           
+          <th rowspan="2">Date of Own Contribution</th>
+          <th rowspan="2">Own Contribution Amount</th>
           <th rowspan="2">Covered Under CGTSI</th>
           <th rowspan="2">Date of Loan Release</th>
           <th rowspan="2">Loan Release Amount</th>
-          
+          <th rowspan="2">MM Claim Date</th>
+          <th rowspan="2">MM Claim Amount</th>
+          <th rowspan="2">MM Remarks at PMEGP CO</th>
           <th rowspan="2" class="header-mm-release">MM Release Date</th>
           <th rowspan="2" class="header-mm-release">MM Release Amount</th>
-          
-          <th rowspan="2">Training_type</th>
+          <th rowspan="2">Payment Status</th>
+          <th rowspan="2">MM Disbursement TX ID</th>
+          <th rowspan="2">Fail Reason</th>
+          <th rowspan="2">EDP Training Center Name</th>
+          <th rowspan="2">Training Start Date</th>
+          <th rowspan="2">Training End Date</th>
+          <th rowspan="2">Training Duration Days</th>
           <th rowspan="2">Certificate Issue Date</th>
           
           <th rowspan="2" class="header-phy-ver">Physical Verification Date</th>
@@ -50,9 +78,13 @@
           
           <th rowspan="2" class="header-tdr">TDR Account No</th>
           <th rowspan="2" class="header-tdr">TDR Date</th>
+          <th rowspan="2">Year</th>
         </tr>
         
         <tr>
+          <th class="sub-header-approved">CE</th>
+          <th class="sub-header-approved">WC</th>
+          <th class="sub-header-approved">Total</th>
           <th class="sub-header-sanctioned">Date</th>
           <th class="sub-header-sanctioned">CE</th>
           <th class="sub-header-sanctioned">WC</th>
@@ -62,15 +94,25 @@
       
       <tbody>
         <tr *ngIf="isLoading">
-          <td colspan="39" class="no-data">Loading data...</td>
+          <td colspan="72" class="no-data">Loading data...</td>
         </tr>
 
         <tr *ngFor="let sRow of secondTableData; let i = index">
           <td>{{ i + 1 }}</td>
+          <td>{{ sRow.id }}</td>
+          <td>{{ sRow.current_status }}</td>
+          <td>{{ sRow.under_process_agency_reason }}</td>
+          <td>{{ sRow.office_name }}</td>
+          <td>{{ sRow.agency_type }}</td>
+          <td>{{ sRow.state }}</td>
           <td>{{ sRow.applicant_id }}</td>
           <td>{{ sRow.applicant_name }}</td>
           <td>{{ sRow.applicant_address }}</td>
+          <td>{{ sRow.applicant_mobile_no }}</td>
+          <td>{{ sRow.alternate_mobile_no }}</td>
           <td>{{ sRow.email }}</td>
+          <td>{{ sRow.aadhar_no }}</td>
+          <td>{{ sRow.legal_status }}</td>
           <td>{{ sRow.gender }}</td>
           <td>{{ sRow.category }}</td>
           <td>{{ sRow.special_category }}</td>
@@ -88,20 +130,39 @@
           <td>{{ sRow.financing_branch_ifsc_code }}</td>
           <td>{{ sRow.financing_branch_address }}</td>
           <td>{{ sRow.online_submission_date | date : "dd/MM/yyyy" }}</td>
+          <td>{{ sRow.dltfec_meeting }}</td>
+          <td>{{ sRow.dltfec_meeting_place }}</td>
+          <td>{{ sRow.forwarding_date_to_bank | date : "dd/MM/yyyy" }}</td>
+          <td>{{ sRow.bank_remarks }}</td>
+          <td>{{ sRow.date_of_documents_receiveda_at_bank | date : "dd/MM/yyyy" }}</td>
           
-          <td>{{ sRow.sanctioned_date | date : "dd/MM/yyyy" }}</td>
-          <td>{{ sRow.sanctioned_ce | number : "1.2-2" }}</td>
-          <td>{{ sRow.sanctioned_wc | number : "1.2-2" }}</td>
-          <td>{{ sRow.sanctioned_total | number : "1.2-2" }}</td>
+          <td>{{ sRow.project_cost_approved_ce | number : "1.2-2" }}</td>
+          <td>{{ sRow.project_cost_approved_wc | number : "1.2-2" }}</td>
+          <td>{{ sRow.project_cost_approved_total | number : "1.2-2" }}</td>
           
+          <td>{{ sRow.sanctioned_by_bank_date | date : "dd/MM/yyyy" }}</td>
+          <td>{{ sRow.sanctioned_by_bank_ce | number : "1.2-2" }}</td>
+          <td>{{ sRow.sanctioned_by_bank_wc | number : "1.2-2" }}</td>
+          <td>{{ sRow.sanctioned_by_bank_total | number : "1.2-2" }}</td>
+          
+          <td>{{ sRow.date_of_deposit_own_contribution | date : "dd/MM/yyyy" }}</td>
+          <td>{{ sRow.own_contribution_amount_deposited | number : "1.2-2" }}</td>
           <td>{{ sRow.covered_under_cgtsi }}</td>
           <td>{{ sRow.date_of_loan_release | date : "dd/MM/yyyy" }}</td>
           <td>{{ sRow.loan_release_amount | number : "1.2-2" }}</td>
+          <td>{{ sRow.mm_claim_date | date : "dd/MM/yyyy" }}</td>
+          <td>{{ sRow.mm_claim_amount | number : "1.2-2" }}</td>
+          <td>{{ sRow.remarks_for_mm_process_at_pmegp_co_mumbai }}</td>
           
           <td>{{ sRow.mm_release_date | date : "dd/MM/yyyy" }}</td>
           <td>{{ sRow.mm_release_amount | number : "1.2-2" }}</td>
-          
-          <td>{{ sRow.training_type }}</td>
+          <td>{{ sRow.payment_status }}</td>
+          <td>{{ sRow.mm_disbursement_transaction_id }}</td>
+          <td>{{ sRow.fail_reason }}</td>
+          <td>{{ sRow.edp_training_center_name }}</td>
+          <td>{{ sRow.training_start_date | date : "dd/MM/yyyy" }}</td>
+          <td>{{ sRow.training_end_date | date : "dd/MM/yyyy" }}</td>
+          <td>{{ sRow.training_duration_days }}</td>
           <td>{{ sRow.certificate_issue_date | date : "dd/MM/yyyy" }}</td>
           
           <td>{{ sRow.physical_verification_conducted_date | date : "dd/MM/yyyy" }}</td>
@@ -112,10 +173,11 @@
           
           <td>{{ sRow.tdr_account_no }}</td>
           <td>{{ sRow.tdr_date | date : "dd/MM/yyyy" }}</td>
+          <td>{{ sRow.year }}</td>
         </tr>
 
         <tr *ngIf="!isLoading && secondTableData.length === 0">
-          <td colspan="39" class="no-data">
+          <td colspan="72" class="no-data">
             {{ errorMessage || 'No data found.' }}
           </td>
         </tr>

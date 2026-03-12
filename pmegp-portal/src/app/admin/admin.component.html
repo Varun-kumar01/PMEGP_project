@@ -24,9 +24,26 @@
 </mat-card>
 
 <mat-card class="file-upload-card agency-upload-card">
-  <mat-card-header>
-    <mat-card-title>Agency Detail File Upload</mat-card-title>
-    <mat-card-subtitle>Upload a detailed Excel file (Single Agency)</mat-card-subtitle>
+  <mat-card-header style="display:flex; justify-content:space-between; align-items:flex-start;">
+    <div>
+      <mat-card-title>Agency Detail File Upload</mat-card-title>
+      <mat-card-subtitle>Upload a detailed Excel file (Single Agency)</mat-card-subtitle>
+    </div>
+    <mat-form-field appearance="outline" style="width:260px; margin-top:4px;">
+      <mat-label>Select Table</mat-label>
+      <mat-select [(ngModel)]="selectedFieldTable">
+        <mat-option value="total_districts_data">agency_received</mat-option>
+        <mat-option value="agency_returned">agency_returned</mat-option>
+        <mat-option value="pending_at_agency">pending_at_agency</mat-option>
+        <mat-option value="forwarded_to_bank">forwarded_to_bank</mat-option>
+        <mat-option value="sanctioned_by_bank_no_of_proj">sanctioned_by_bank_no_of_proj</mat-option>
+        <mat-option value="mm_claimed_no_of_proj">mm_claimed_no_of_proj</mat-option>
+        <mat-option value="mm_disbursement_no_of_proj">mm_disbursement_no_of_proj</mat-option>
+        <mat-option value="returned_by_bank">returned_by_bank</mat-option>
+        <mat-option value="pending_at_bank_no_of_proj">pending_at_bank_no_of_proj</mat-option>
+        <mat-option value="pending_for_mm_disbursement_no_of_proj">pending_for_mm_disbursement_no_of_proj</mat-option>
+      </mat-select>
+    </mat-form-field>
   </mat-card-header>
   <mat-card-content>
     <input type="file" class="visually-hidden" #agencyFileInput (change)="onAgencyFileSelected($event)" accept=".xlsx,.xls">
