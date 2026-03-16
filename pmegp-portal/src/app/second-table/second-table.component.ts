@@ -13,6 +13,7 @@ import { environment } from '../../environments/environment';
 })
 export class SecondTableComponent implements OnInit {
   clickedRowName: string | null = null;
+  selectedYear: string | null = null;
   secondTableData: any[] = [];
   isLoading = true;
   errorMessage: string | null = null;
@@ -27,15 +28,39 @@ export class SecondTableComponent implements OnInit {
     this.route.params.subscribe((params) => {
       this.clickedRowName = params['name'];
       if (this.clickedRowName) {
-        this.fetchDistrictData(this.clickedRowName);
+        this.route.queryParams.subscribe((queryParams) => {
+          this.selectedYear = queryParams['year'] || null;
+          const columnKey = queryParams['columnKey'] || null;
+          this.fetchDistrictData(this.clickedRowName, this.selectedYear, columnKey);
+        });
       }
     });
   }
 
-  fetchDistrictData(districtName: string): void {
+  fetchDistrictData(districtName: string | null, year?: string | null, columnKey?: string | null): void {
+    if (!districtName) {
+      this.errorMessage = 'District name is not available.';
+      this.isLoading = false;
+      return;
+    }
+
     this.isLoading = true;
     this.errorMessage = null;
-    const apiUrl = `${environment.apiUrl}/pmeg-data/data/${districtName}`;
+    
+    // Build API URL with query parameters
+    let apiUrl = `${environment.apiUrl}/pmeg-data/data/${districtName}`;
+    const queryParams = [];
+    
+    if (year) {
+      queryParams.push(`year=${year}`);
+    }
+    if (columnKey) {
+      queryParams.push(`columnKey=${columnKey}`);
+    }
+    
+    if (queryParams.length > 0) {
+      apiUrl += '?' + queryParams.join('&');
+    }
 
     this.http.get<any[]>(apiUrl).subscribe({
       next: (data) => {

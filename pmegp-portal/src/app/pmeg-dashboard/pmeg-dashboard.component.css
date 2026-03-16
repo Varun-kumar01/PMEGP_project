@@ -229,6 +229,21 @@ thead .sticky-col-2 {
   background-color: #eef;
 }
 
+/* Clickable Table Cells */
+td.clickable {
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+td.clickable:hover {
+  background-color: #e3f2fd;
+  color: #1565c0;
+  font-weight: 500;
+}
+
+td.clickable:active {
+  background-color: #bbdefb;
+}
 
 .no-data {
   text-align: center;

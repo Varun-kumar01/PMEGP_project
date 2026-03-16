@@ -61,6 +61,25 @@ export const getPmegData = async (req, res) => {
 };
 
 
+export const getPmegDataByYear = async (req, res) => {
+  const { year } = req.params;
+
+  if (!year) {
+    return res.status(400).json({ message: "Year parameter is required" });
+  }
+
+  const query = "SELECT * FROM pmeg_data_table WHERE year = ?";
+
+  try {
+    const [results] = await db.query(query, [year]);
+    res.json(results);
+  } catch (err) {
+    console.error("Database error fetching PMEG data by year:", err);
+    return res.status(500).json({ message: "Database error" });
+  }
+};
+
+
 export const uploadPmegData = async (req, res) => {
   if (!req.file) {
     return res.status(400).json({ message: "No file uploaded." });
@@ -80,7 +99,7 @@ export const uploadPmegData = async (req, res) => {
           getCellVal(row.getCell(7)), getCellVal(row.getCell(8)), getCellVal(row.getCell(9)),
           getCellVal(row.getCell(10)), getCellVal(row.getCell(11)), getCellVal(row.getCell(12)),
           getCellVal(row.getCell(13)), getCellVal(row.getCell(14)), getCellVal(row.getCell(15)),
-          getCellVal(row.getCell(16)), getCellVal(row.getCell(17))
+          getCellVal(row.getCell(16)), getCellVal(row.getCell(17)), getCellVal(row.getCell(18))
         ];
         if (rowData[1]) dataToInsert.push(rowData);
       }
@@ -93,25 +112,16 @@ export const uploadPmegData = async (req, res) => {
       "rowNo", "name", "agencyReceived", "agencyReturned", "Pending_At_Agency",
       "Forwarded_to_Bank", "sanctionedPrj", "sanctionedLakh", "claimedPrj",
       "claimedLakh", "disbursementPrj", "disbursementLakh", "bankReturned",
-      "pendingBankPrj", "pendingBankLakh", "pendingDisbursementPrj", "pendingDisbursementLakh"
+      "pendingBankPrj", "pendingBankLakh", "pendingDisbursementPrj", "pendingDisbursementLakh", "year"
     ];
 
     const query = `
       INSERT INTO pmeg_data_table (${columns.join(", ")}) 
-      VALUES ? 
-      ON DUPLICATE KEY UPDATE
-        name = VALUES(name), agencyReceived = VALUES(agencyReceived), agencyReturned = VALUES(agencyReturned),
-        Pending_At_Agency = VALUES(Pending_At_Agency), Forwarded_to_Bank = VALUES(Forwarded_to_Bank),
-        sanctionedPrj = VALUES(sanctionedPrj), sanctionedLakh = VALUES(sanctionedLakh),
-        claimedPrj = VALUES(claimedPrj), claimedLakh = VALUES(claimedLakh),
-        disbursementPrj = VALUES(disbursementPrj), disbursementLakh = VALUES(disbursementLakh),
-        bankReturned = VALUES(bankReturned), pendingBankPrj = VALUES(pendingBankPrj),
-        pendingBankLakh = VALUES(pendingBankLakh), pendingDisbursementPrj = VALUES(pendingDisbursementPrj),
-        pendingDisbursementLakh = VALUES(pendingDisbursementLakh)
+      VALUES ?
     `;
 
     const [result] = await db.query(query, [dataToInsert]);
-    res.status(201).json({ message: `Main file processed. ${result.affectedRows} rows affected.` });
+    res.status(201).json({ message: `Main file processed. ${result.affectedRows} rows added. Old data preserved.` });
 
   } catch (error) {
     console.error("Error processing Main Excel:", error);
@@ -147,6 +157,11 @@ export const uploadAgencyDetailData = async (req, res) => {
     return res.status(400).json({ message: "No file uploaded." });
   }
 
+  const tableName = req.body?.tableName;
+  if (!tableName) {
+    return res.status(400).json({ message: "Table name not selected." });
+  }
+
   try {
     console.log("Processing Agency / District Excel File...");
 
@@ -157,17 +172,24 @@ export const uploadAgencyDetailData = async (req, res) => {
     const dataToInsert = [];
 
     const dbColumns = [
-      "applicant_id", "applicant_name", "applicant_address", "email", "gender",
-      "category", "special_category", "qualification", "date_of_birth", "age",
-      "unit_location", "unit_address", "taluk_block", "unit_district", "industry_type",
-      "product_desc_activity", "proposed_project_cost", "mm_involve",
-      "financing_branch_ifsc_code", "financing_branch_address", "online_submission_date",
-      "sanctioned_date", "sanctioned_ce", "sanctioned_wc", "sanctioned_total",
+      "current_status", "under_process_agency_reason", "office_name", "agency_type", "state",
+      "applicant_id", "applicant_name", "applicant_address", "applicant_mobile_no", "alternate_mobile_no",
+      "email", "aadhar_no", "legal_status", "gender", "category", "special_category",
+      "qualification", "date_of_birth", "age", "unit_location", "unit_address",
+      "taluk_block", "unit_district", "industry_type", "product_desc_activity",
+      "proposed_project_cost", "mm_involve", "financing_branch_ifsc_code", "financing_branch_address",
+      "online_submission_date", "dltfec_meeting", "dltfec_meeting_place", "forwarding_date_to_bank",
+      "bank_remarks", "date_of_documents_receiveda_at_bank",
+      "project_cost_approved_ce", "project_cost_approved_wc", "project_cost_approved_total",
+      "sanctioned_by_bank_date", "sanctioned_by_bank_ce", "sanctioned_by_bank_wc", "sanctioned_by_bank_total",
+      "date_of_deposit_own_contribution", "own_contribution_amount_deposited",
       "covered_under_cgtsi", "date_of_loan_release", "loan_release_amount",
-      "mm_release_date", "mm_release_amount", "training_type", "certificate_issue_date",
-      "physical_verification_conducted_date", "physical_verification_status",
+      "mm_claim_date", "mm_claim_amount", "remarks_for_mm_process_at_pmegp_co_mumbai",
+      "mm_release_date", "mm_release_amount", "payment_status", "mm_disbursement_transaction_id", "fail_reason",
+      "edp_training_center_name", "training_start_date", "training_end_date", "training_duration_days",
+      "certificate_issue_date", "physical_verification_conducted_date", "physical_verification_status",
       "mm_final_adjustment_date", "mm_final_adjustment_amount",
-      "tdr_account_no", "tdr_date"
+      "tdr_account_no", "tdr_date", "year"
     ];
 
     const headerMap = {};
@@ -197,12 +219,21 @@ export const uploadAgencyDetailData = async (req, res) => {
       return res.status(400).json({ message: "No valid data rows found." });
 
     const query = `
-      INSERT INTO total_district_data (${dbColumns.join(", ")})
+      INSERT INTO ${tableName} (${dbColumns.join(", ")})
       VALUES ?
       ON DUPLICATE KEY UPDATE
+        current_status = VALUES(current_status),
+        under_process_agency_reason = VALUES(under_process_agency_reason),
+        office_name = VALUES(office_name),
+        agency_type = VALUES(agency_type),
+        state = VALUES(state),
         applicant_name = VALUES(applicant_name),
         applicant_address = VALUES(applicant_address),
+        applicant_mobile_no = VALUES(applicant_mobile_no),
+        alternate_mobile_no = VALUES(alternate_mobile_no),
         email = VALUES(email),
+        aadhar_no = VALUES(aadhar_no),
+        legal_status = VALUES(legal_status),
         gender = VALUES(gender),
         category = VALUES(category),
         special_category = VALUES(special_category),
@@ -220,23 +251,43 @@ export const uploadAgencyDetailData = async (req, res) => {
         financing_branch_ifsc_code = VALUES(financing_branch_ifsc_code),
         financing_branch_address = VALUES(financing_branch_address),
         online_submission_date = VALUES(online_submission_date),
-        sanctioned_date = VALUES(sanctioned_date),
-        sanctioned_ce = VALUES(sanctioned_ce),
-        sanctioned_wc = VALUES(sanctioned_wc),
-        sanctioned_total = VALUES(sanctioned_total),
+        dltfec_meeting = VALUES(dltfec_meeting),
+        dltfec_meeting_place = VALUES(dltfec_meeting_place),
+        forwarding_date_to_bank = VALUES(forwarding_date_to_bank),
+        bank_remarks = VALUES(bank_remarks),
+        date_of_documents_receiveda_at_bank = VALUES(date_of_documents_receiveda_at_bank),
+        project_cost_approved_ce = VALUES(project_cost_approved_ce),
+        project_cost_approved_wc = VALUES(project_cost_approved_wc),
+        project_cost_approved_total = VALUES(project_cost_approved_total),
+        sanctioned_by_bank_date = VALUES(sanctioned_by_bank_date),
+        sanctioned_by_bank_ce = VALUES(sanctioned_by_bank_ce),
+        sanctioned_by_bank_wc = VALUES(sanctioned_by_bank_wc),
+        sanctioned_by_bank_total = VALUES(sanctioned_by_bank_total),
+        date_of_deposit_own_contribution = VALUES(date_of_deposit_own_contribution),
+        own_contribution_amount_deposited = VALUES(own_contribution_amount_deposited),
         covered_under_cgtsi = VALUES(covered_under_cgtsi),
         date_of_loan_release = VALUES(date_of_loan_release),
         loan_release_amount = VALUES(loan_release_amount),
+        mm_claim_date = VALUES(mm_claim_date),
+        mm_claim_amount = VALUES(mm_claim_amount),
+        remarks_for_mm_process_at_pmegp_co_mumbai = VALUES(remarks_for_mm_process_at_pmegp_co_mumbai),
         mm_release_date = VALUES(mm_release_date),
         mm_release_amount = VALUES(mm_release_amount),
-        training_type = VALUES(training_type),
-        certificate_issue_date = VALUES(training_type),
+        payment_status = VALUES(payment_status),
+        mm_disbursement_transaction_id = VALUES(mm_disbursement_transaction_id),
+        fail_reason = VALUES(fail_reason),
+        edp_training_center_name = VALUES(edp_training_center_name),
+        training_start_date = VALUES(training_start_date),
+        training_end_date = VALUES(training_end_date),
+        training_duration_days = VALUES(training_duration_days),
+        certificate_issue_date = VALUES(certificate_issue_date),
         physical_verification_conducted_date = VALUES(physical_verification_conducted_date),
         physical_verification_status = VALUES(physical_verification_status),
         mm_final_adjustment_date = VALUES(mm_final_adjustment_date),
         mm_final_adjustment_amount = VALUES(mm_final_adjustment_amount),
         tdr_account_no = VALUES(tdr_account_no),
-        tdr_date = VALUES(tdr_date)
+        tdr_date = VALUES(tdr_date),
+        year = VALUES(year)
     `;
 
     const chunks = chunkArray(dataToInsert, 500);
@@ -265,28 +316,78 @@ export const uploadAgencyDetailData = async (req, res) => {
 
 
 export const getDistrictData = async (req, res) => {
+
   const { district } = req.params;
+  const { year, columnKey } = req.query;
 
   try {
-    const q = `
+
+    // Map dashboard column → database table
+    const tableMap = {
+
+      agencyReceived: "agency_received",
+
+      agencyReturned: "agency_returned",
+
+      Pending_At_Agency: "prnding_at_agency",
+
+      Forwarded_to_Bank: "forwarded_to_bank",
+
+      sanctionedPrj: "sanctioned_by_bank_no_of_proj",
+
+      claimedPrj: "mm_claimed_no_of_proj",
+
+      disbursementPrj: "mm_disbursement_no_of_proj",
+
+      pendingBankPrj: "pending_at_bank_no_of_proj",
+
+      pendingDisbursementPrj: "pending_for_mm_disbursement_no_of_proj",
+
+      physicalVerification: "physical_verification_data"
+
+    };
+
+    // Get table name from columnKey
+    const targetTable = tableMap[columnKey];
+
+    if (!targetTable) {
+      return res.status(400).json({
+        message: `Invalid columnKey: ${columnKey}`
+      });
+    }
+
+    // Build query
+    let query = `
       SELECT *
-      FROM total_district_data
+      FROM ${targetTable}
       WHERE unit_district = ?
     `;
 
-    const [rows] = await db.query(q, [district]);
+    const params = [district];
 
-    return res.json(rows);
+    if (year) {
+      query += ` AND year = ?`;
+      params.push(year);
+    }
+
+    query += ` ORDER BY applicant_id ASC`;
+
+    const [rows] = await db.query(query, params);
+
+    res.json(rows);
 
   } catch (error) {
-    console.error("District Fetch Error:", error);
-    return res.status(500).json({ 
-      message: "Database error fetching district data." 
+
+    console.error("District Fetch Error:", error.message);
+
+    res.status(500).json({
+      message: "Database error fetching district data",
+      error: error.message
     });
+
   }
+
 };
-
-
 
 export const uploadKvibData = async (req, res) => {
   try {

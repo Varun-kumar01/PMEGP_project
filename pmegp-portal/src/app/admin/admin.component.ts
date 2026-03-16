@@ -161,6 +161,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatSelectModule } from '@angular/material/select';
 
 @Component({
   selector: 'app-admin',
@@ -176,6 +177,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
     MatIconModule,
     MatProgressSpinnerModule,
     MatFormFieldModule,
+    MatSelectModule,
   ]
 })
 export class AdminComponent {
@@ -201,6 +203,9 @@ export class AdminComponent {
   kvibUploadMessage: string | null = null;
   isUploadingKvib = false;
   kvibMessageType: 'success' | 'error' | 'info' = 'info';
+
+  /* ===== AGENCY FILE TABLE SELECTION ===== */
+  selectedFieldTable: string = '';
 
   /* ===== NEW PROJECT PDF UPLOAD ===== */
 
@@ -273,6 +278,7 @@ export class AdminComponent {
 
     const formData = new FormData();
     formData.append("file", this.agencyFile);
+    formData.append("tableName", this.selectedFieldTable);
 
     this.http.post<any>(`${this.apiUrl}/pmeg-data/upload-detail`, formData)
       .subscribe({
@@ -281,6 +287,7 @@ export class AdminComponent {
           this.agencyMessageType = 'success';
           this.isUploadingAgency = false;
           this.agencyFile = null;
+          this.selectedFieldTable = '';
           this.agencyFileInput.nativeElement.value = '';
         },
         error: err => {

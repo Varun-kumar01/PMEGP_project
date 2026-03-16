@@ -1,12 +1,12 @@
 <div class="header-section">
   <div class="header-content">
-  <button class="back-btn-fixed" (click)="goBack()">
+  <button class="back-btn-fixed" routerLink="/pmegp-report">
     <span class="back-arrow">‹</span>
     <span class="back-text">Back</span>
   </button>
     <p class="user-info"><strong>User Name: TELANGANA (KVIB)</strong></p>
     <h2 class="report-title">PMEGP Portal online Performance Report</h2>
-    <p class="report-details">Agency KVIB KVICC Zone South State TELANGANA From Date {{ fromDate }} To Date {{ toDate }}</p>
+    <p class="report-details">Agency KVIB KVICC Zone South State TELANGANA <span *ngIf="selectedYear"><strong>Year: {{ selectedYear }}</strong></span> From Date {{ fromDate }} To Date {{ toDate }}</p>
   </div>
 </div>
 
@@ -69,28 +69,26 @@
     <tbody>
       <tr *ngFor="let row of tableData">
         <td class="sticky-col sticky-col-1">{{ row.rowNo }}</td>
-        <td class="sticky-col sticky-col-2">{{ row.name }}</td>
+        <td class="sticky-col sticky-col-2 clickable" (click)="onAgencyClick($event, row, 'name')">{{ row.name }}</td>
 
-        <td>
-          <a href="#" (click)="onAgencyClick($event, row)">
-            {{ row.agencyReceived }}
-          </a>
+        <td class="clickable" (click)="onAgencyClick($event, row, 'agencyReceived')">
+          {{ row.agencyReceived }}
         </td>
 
-        <td>{{ row.agencyReturned }}</td>
-        <td>{{ row.Pending_At_Agency }}</td>
-        <td>{{ row.Forwarded_to_Bank }}</td>
-        <td>{{ row.sanctionedPrj }}</td>
+        <td class="clickable" (click)="onAgencyClick($event, row, 'agencyReturned')">{{ row.agencyReturned }}</td>
+        <td class="clickable" (click)="onAgencyClick($event, row, 'Pending_At_Agency')">{{ row.Pending_At_Agency }}</td>
+        <td class="clickable" (click)="onAgencyClick($event, row, 'Forwarded_to_Bank')">{{ row.Forwarded_to_Bank }}</td>
+        <td class="clickable" (click)="onAgencyClick($event, row, 'sanctionedPrj')">{{ row.sanctionedPrj }}</td>
         <td>{{ row.sanctionedLakh }}</td>
-        <td>{{ row.claimedPrj }}</td>
-        <td>{{ row.claimedLakh }}</td>
-        <td>{{ row.disbursementPrj }}</td>
-        <td>{{ row.disbursementLakh }}</td>
-        <td>{{ row.bankReturned }}</td>
-        <td>{{ row.pendingBankPrj }}</td>
-        <td>{{ row.pendingBankLakh }}</td>
-        <td>{{ row.pendingDisbursementPrj }}</td>
-        <td>{{ row.pendingDisbursementLakh }}</td>
+        <td class="clickable" (click)="onAgencyClick($event, row, 'claimedPrj')">{{ row.claimedPrj }}</td>
+        <td >{{ row.claimedLakh }}</td>
+        <td class="clickable" (click)="onAgencyClick($event, row, 'disbursementPrj')">{{ row.disbursementPrj }}</td>
+        <td >{{ row.disbursementLakh }}</td>
+        <td class="clickable" (click)="onAgencyClick($event, row, 'bankReturned')">{{ row.bankReturned }}</td>
+        <td class="clickable" (click)="onAgencyClick($event, row, 'pendingBankPrj')">{{ row.pendingBankPrj }}</td>
+        <td >{{ row.pendingBankLakh }}</td>
+        <td class="clickable" (click)="onAgencyClick($event, row, 'pendingDisbursementPrj')">{{ row.pendingDisbursementPrj }}</td>
+        <td >{{ row.pendingDisbursementLakh }}</td>
       </tr>
 
       <!-- GRAND TOTAL ROW -->
