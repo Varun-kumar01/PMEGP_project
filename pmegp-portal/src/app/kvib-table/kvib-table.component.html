@@ -1,0 +1,35 @@
+<div class="table-container">
+  <h2>Trainee Details</h2>
+  <table class="custom-table">
+    <thead>
+      <tr>
+        <th>Sr. No.</th>
+        <th>Trainee ID</th>
+        <th>Name</th>
+        <th>Batch ID</th>
+        <th>Batch Year</th>
+        <th>DOB</th>
+        <th>Gender</th>
+        <th>Father/Spouse Name</th>
+        <th>Category</th>
+        <th>Religion</th>
+        <th>Address</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let t of trainees">
+        <td>{{ t.id }}</td>
+        <td>{{ t.trainee_id }}</td>
+        <td>{{ t.name }}</td>
+        <td>{{ t.batch_id }}</td>
+        <td>{{ t.batch_year }}</td>
+        <td>{{ t.dob }}</td>
+        <td>{{ t.gender }}</td>
+        <td>{{ t.father_spouse_name }}</td>
+        <td>{{ t.category }}</td>
+        <td>{{ t.religion }}</td>
+        <td class="address-cell">{{ t.address }}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>

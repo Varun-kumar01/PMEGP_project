@@ -1,0 +1,125 @@
+<div class="second-table-container">
+  <button (click)="goBackToMainTable()">Back to Dashboard</button>
+  
+  <h3 *ngIf="clickedRowName">Details for: {{ clickedRowName }}</h3>
+
+  <div class="table-scroll">
+    <table>
+      <thead>
+        <tr>
+          <th rowspan="2">Sno</th>
+          <th rowspan="2">Applicant ID</th>
+          <th rowspan="2">Applicant Name</th>
+          <th rowspan="2">Applicant Address</th>
+          <th rowspan="2">Email</th>
+          <th rowspan="2">Gender</th>
+          <th rowspan="2">Category</th>
+          <th rowspan="2">Special Category</th>
+          <th rowspan="2">Qualification</th>
+          <th rowspan="2">Date of Birth</th>
+          <th rowspan="2">Age</th>
+          <th rowspan="2">Unit Location</th>
+          <th rowspan="2">Unit Address</th>
+          <th rowspan="2">Taluk/Block</th>
+          <th rowspan="2">Unit District</th>
+          <th rowspan="2">Industry Type</th>
+          <th rowspan="2">Product Desc/Activity</th>
+          <th rowspan="2">Proposed Project Cost</th>
+          <th rowspan="2">MM Involve</th>
+          <th rowspan="2">Financing Branch IFSC</th>
+          <th rowspan="2">Financing Branch Address</th>
+          <th rowspan="2">Online Submission Date</th>
+          
+          <th colspan="4" class="group-header header-sanctioned">Sanctioned by Bank</th>
+          
+          <th rowspan="2">Covered Under CGTSI</th>
+          <th rowspan="2">Date of Loan Release</th>
+          <th rowspan="2">Loan Release Amount</th>
+          
+          <th rowspan="2" class="header-mm-release">MM Release Date</th>
+          <th rowspan="2" class="header-mm-release">MM Release Amount</th>
+          
+          <th rowspan="2">Training_type</th>
+          <th rowspan="2">Certificate Issue Date</th>
+          
+          <th rowspan="2" class="header-phy-ver">Physical Verification Date</th>
+          <th rowspan="2" class="header-phy-ver">Physical Verification Status</th>
+          
+          <th rowspan="2" class="header-mm-adj">MM Final Adj Date</th>
+          <th rowspan="2" class="header-mm-adj">MM Final Adj Amount</th>
+          
+          <th rowspan="2" class="header-tdr">TDR Account No</th>
+          <th rowspan="2" class="header-tdr">TDR Date</th>
+        </tr>
+        
+        <tr>
+          <th class="sub-header-sanctioned">Date</th>
+          <th class="sub-header-sanctioned">CE</th>
+          <th class="sub-header-sanctioned">WC</th>
+          <th class="sub-header-sanctioned">Total</th>
+        </tr>
+      </thead>
+      
+      <tbody>
+        <tr *ngIf="isLoading">
+          <td colspan="39" class="no-data">Loading data...</td>
+        </tr>
+
+        <tr *ngFor="let sRow of secondTableData; let i = index">
+          <td>{{ i + 1 }}</td>
+          <td>{{ sRow.applicant_id }}</td>
+          <td>{{ sRow.applicant_name }}</td>
+          <td>{{ sRow.applicant_address }}</td>
+          <td>{{ sRow.email }}</td>
+          <td>{{ sRow.gender }}</td>
+          <td>{{ sRow.category }}</td>
+          <td>{{ sRow.special_category }}</td>
+          <td>{{ sRow.qualification }}</td>
+          <td>{{ sRow.date_of_birth | date : "dd/MM/yyyy" }}</td>
+          <td>{{ sRow.age }}</td>
+          <td>{{ sRow.unit_location }}</td>
+          <td>{{ sRow.unit_address }}</td>
+          <td>{{ sRow.taluk_block }}</td>
+          <td>{{ sRow.unit_district }}</td>
+          <td>{{ sRow.industry_type }}</td>
+          <td>{{ sRow.product_desc_activity }}</td>
+          <td>{{ sRow.proposed_project_cost | number : "1.2-2" }}</td>
+          <td>{{ sRow.mm_involve | number : "1.2-2" }}</td>
+          <td>{{ sRow.financing_branch_ifsc_code }}</td>
+          <td>{{ sRow.financing_branch_address }}</td>
+          <td>{{ sRow.online_submission_date | date : "dd/MM/yyyy" }}</td>
+          
+          <td>{{ sRow.sanctioned_date | date : "dd/MM/yyyy" }}</td>
+          <td>{{ sRow.sanctioned_ce | number : "1.2-2" }}</td>
+          <td>{{ sRow.sanctioned_wc | number : "1.2-2" }}</td>
+          <td>{{ sRow.sanctioned_total | number : "1.2-2" }}</td>
+          
+          <td>{{ sRow.covered_under_cgtsi }}</td>
+          <td>{{ sRow.date_of_loan_release | date : "dd/MM/yyyy" }}</td>
+          <td>{{ sRow.loan_release_amount | number : "1.2-2" }}</td>
+          
+          <td>{{ sRow.mm_release_date | date : "dd/MM/yyyy" }}</td>
+          <td>{{ sRow.mm_release_amount | number : "1.2-2" }}</td>
+          
+          <td>{{ sRow.training_type }}</td>
+          <td>{{ sRow.certificate_issue_date | date : "dd/MM/yyyy" }}</td>
+          
+          <td>{{ sRow.physical_verification_conducted_date | date : "dd/MM/yyyy" }}</td>
+          <td>{{ sRow.physical_verification_status }}</td>
+          
+          <td>{{ sRow.mm_final_adjustment_date | date : "dd/MM/yyyy" }}</td>
+          <td>{{ sRow.mm_final_adjustment_amount | number : "1.2-2" }}</td>
+          
+          <td>{{ sRow.tdr_account_no }}</td>
+          <td>{{ sRow.tdr_date | date : "dd/MM/yyyy" }}</td>
+        </tr>
+
+        <tr *ngIf="!isLoading && secondTableData.length === 0">
+          <td colspan="39" class="no-data">
+            {{ errorMessage || 'No data found.' }}
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
