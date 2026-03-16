@@ -95,3 +95,87 @@ out/
 *.pem
 *.key
 *.crt
+
+#################################
+district_reports/
+cache/
+excel/
+scraper/
+
+#################################
+# SCRAPER GENERATED FILES
+#################################
+
+# district cache
+district_reports/cache/
+
+# scraper logs
+district_reports/*.txt
+scraper/*.txt
+
+# html dumps
+scraper/*.html
+district_reports/*.html
+
+# excel outputs
+excel/
+*.xlsx
+*.xls
+
+# temporary excel files
+~$*.xlsx
+####################################
+# PYTHON CACHE
+####################################
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+####################################
+# VIRTUAL ENVIRONMENT
+####################################
+.venv/
+venv/
+env/
+
+####################################
+# EXCEL / DATA OUTPUT
+####################################
+*.xlsx
+*.xls
+~$*.xlsx
+
+####################################
+# HTML SCRAPER OUTPUT
+####################################
+*.html
+
+####################################
+# LOG / DEBUG OUTPUT
+####################################
+*.txt
+
+####################################
+# SPECIFIC GENERATED FILES
+####################################
+pmegp_*.xlsx
+scraper_run_*.txt
+validation_result.txt
+
+####################################
+# CACHE FOLDERS
+####################################
+district_reports/cache/
+excel/
+####################################
+# SCRAPER SCRIPTS
+####################################
+scraper/
+run_scraper_with_logging.py
+run_and_check_scraper.py
+simple_run_scraper.py
+test_*.py
+validate_excel.py
+check_test_file.py
+list_xlsx.py
