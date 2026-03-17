@@ -1,0 +1,45 @@
+<div class="glance-container">
+  <div class="glance-header">
+    <h1>{{ glanceTitle }}</h1>
+    <div class="year-selector">
+      <label for="yearDropdown">Select Year:</label>
+      <select id="yearDropdown" [(ngModel)]="selectedYear" (change)="onYearChange()" class="year-dropdown">
+        <option *ngFor="let year of years" [value]="year">{{ year }}</option>
+      </select>
+    </div>
+  </div>
+
+  <div *ngIf="errorMessage" class="error-message">
+    {{ errorMessage }}
+  </div>
+
+  <div *ngIf="isLoading" class="loading">
+    Loading data...
+  </div>
+
+  <div *ngIf="!isLoading && glanceData.length > 0" class="data-table-wrapper">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>District</th>
+          <th *ngIf="!shouldShowProjectsAndLakh()">Value</th>
+          <th *ngIf="shouldShowProjectsAndLakh()">No.of Projects</th>
+          <th *ngIf="shouldShowProjectsAndLakh()">MM (in Lakh (₹))</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let row of glanceData">
+          <td>{{ row.district }}</td>
+          <td *ngIf="!shouldShowProjectsAndLakh()">{{ row.value !== null ? row.value : '-' }}</td>
+          <td *ngIf="shouldShowProjectsAndLakh()">{{ row.projects !== null ? row.projects : '-' }}</td>
+          <td *ngIf="shouldShowProjectsAndLakh()">{{ row.lakh !== null ? row.lakh : '-' }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div *ngIf="!isLoading && glanceData.length === 0 && !errorMessage" class="no-data">
+    No data available for the selected year.
+  </div>
+</div>
+

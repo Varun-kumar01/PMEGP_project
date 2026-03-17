@@ -129,6 +129,8 @@
 .card-list { list-style: none; padding: 0; }
 .card-list li { font-size: 1rem; margin-bottom: 12px; padding-left: 20px; position: relative; color: #444; }
 .card-list li::before { content: '✔'; position: absolute; left: 0; color: #7B1E23; font-weight: bold; }
+.card-list li a { color: #444; text-decoration: none; transition: all 0.3s ease; cursor: pointer; }
+.card-list li a:hover { color: #7B1E23; text-decoration: underline; font-weight: 600; }
 
 /* --- Login Panels --- */
 .right-panel { background: #F0F8FF; border-radius: 12px; padding: 30px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }

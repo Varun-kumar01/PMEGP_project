@@ -1,13 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule, DatePipe, DecimalPipe } from '@angular/common'; 
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { environment } from '../../environments/environment';
 
 @Component({
   selector: 'app-second-table',
   standalone: true,
-  imports: [CommonModule, HttpClientModule, DatePipe, DecimalPipe], 
+  imports: [CommonModule, HttpClientModule, DatePipe, DecimalPipe, RouterModule], 
   templateUrl: './second-table.component.html',
   styleUrl: './second-table.component.css',
 })

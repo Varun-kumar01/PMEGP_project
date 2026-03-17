@@ -27,6 +27,8 @@ import cbcVerifiedReportRoutes from "./routes/cbc_verified_reportRoutes.js";
 
 import kvibDashboardRoutes from './routes/kvib_dashboardRoutes.js';
 
+import glanceRoutes from './routes/glanceRouters.js';
+
 import projectRoutes from "./routes/projectRoutes.js";
 
 
@@ -105,6 +107,8 @@ app.get("/", (req, res) => {
 });
 
 app.use('/api/kvib-dashboard', kvibDashboardRoutes);
+
+app.use('/api/glance', glanceRoutes);
 
 app.use("/api/projects", projectRoutes);
 
