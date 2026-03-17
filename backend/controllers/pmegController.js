@@ -151,25 +151,95 @@ function chunkArray(arr, size) {
   return result;
 }
 
+// Get actual columns from a database table
+async function getTableColumns(tableName) {
+  try {
+    const [results] = await db.query(`DESCRIBE ${tableName}`);
+    return results.map(row => row.Field);
+  } catch (err) {
+    console.error(`ERROR getting columns for ${tableName}:`, err.message);
+    return [];
+  }
+}
+
 
 export const uploadAgencyDetailData = async (req, res) => {
+  console.log("uploadAgencyDetailData called");
+  console.log("req.file:", req.file ? "exists" : "MISSING");
+  console.log("req.body:", req.body);
+  console.log("req.body.tableName:", req.body?.tableName);
+  console.log("Headers:", req.headers['content-type']);
+
   if (!req.file) {
+    console.error("ERROR: No file in request");
     return res.status(400).json({ message: "No file uploaded." });
   }
 
-  const tableName = req.body?.tableName;
+  // Safer tableName extraction
+  let tableName = (req.body?.tableName || '').toString().trim();
   if (!tableName) {
-    return res.status(400).json({ message: "Table name not selected." });
+    tableName = 'ALL'; // default
+  }
+  console.log("Resolved tableName:", tableName);
+
+  const sheetTableMap = {
+    'Received': 'agency_received',
+    'Returned at Agency': 'agency_returned',
+    'Forwarded to Bank': 'forwarded_to_bank',
+    'Sanctioned': 'sanctioned_by_bank_no_of_proj',
+    'MM Claimed': 'mm_claimed_no_of_proj',
+    'MM Disbursement': 'mm_disbursement_no_of_proj',
+    'Returned by Bank': 'returned_by_bank',
+    'Pending at Agency': 'pending_for_mm_disbursement_no_of_proj',
+    'Pend MM Disbmt - Total': 'pending_for_mm_disbursement_no_of_proj',
+    'Pend MM Disbmt - Detail': 'pending_for_mm_disbursement_no_of_proj'
+  };
+
+  const allowedTableNames = Object.values(sheetTableMap);
+
+  if (!tableName) {
+    // default to all sheets mode when no tableName is given.
+    tableName = 'ALL';
+  }
+
+  const isAllMode = tableName.toUpperCase() === 'ALL';
+
+  if (!isAllMode && !allowedTableNames.includes(tableName)) {
+    console.log(`Invalid table name: "${tableName}", allowed: ${allowedTableNames.join(", ")}`);
+    return res.status(400).json({ 
+      message: `Table name "${tableName}" not in allowed list: ${allowedTableNames.join(", ")}` 
+    });
   }
 
   try {
     console.log("Processing Agency / District Excel File...");
 
-    const workbook = new ExcelJS.Workbook();
-    await workbook.xlsx.load(req.file.buffer);
+    let workbook;
+    try {
+      workbook = new ExcelJS.Workbook();
+      await workbook.xlsx.load(req.file.buffer);
+      console.log("✓ Workbook loaded successfully");
+    } catch (loadErr) {
+      console.error("ERROR loading workbook:", loadErr.message);
+      return res.status(400).json({ message: "Cannot parse Excel file. Ensure it's a valid .xlsx file." });
+    }
 
-    const worksheet = workbook.worksheets[0];
-    const dataToInsert = [];
+    let worksheets;
+    try {
+      worksheets = isAllMode
+        ? workbook.worksheets
+        : workbook.worksheets.filter(ws => {
+            return ws.name === tableName || sheetTableMap[ws.name] === tableName;
+          });
+      console.log(`✓ Found ${worksheets.length} matching worksheets`);
+    } catch (wsErr) {
+      console.error("ERROR filtering worksheets:", wsErr.message);
+      return res.status(500).json({ message: "Error reading worksheet names." });
+    }
+
+    if (!worksheets || worksheets.length === 0) {
+      return res.status(400).json({ message: "No matching worksheet(s) found." });
+    }
 
     const dbColumns = [
       "current_status", "under_process_agency_reason", "office_name", "agency_type", "state",
@@ -192,124 +262,129 @@ export const uploadAgencyDetailData = async (req, res) => {
       "tdr_account_no", "tdr_date", "year"
     ];
 
-    const headerMap = {};
+    let totalInserted = 0;
+    let totalDataRows = 0;
 
-    worksheet.getRow(2).eachCell((cell, colNumber) => {
-      const normalizedHeader = normalizeHeader(cell.value);
-
-      dbColumns.forEach(dbCol => {
-        if (normalizedHeader === dbCol) {
-          headerMap[dbCol] = colNumber;
+    for (const worksheet of worksheets) {
+      try {
+        console.log(`\n📄 Processing worksheet: "${worksheet.name}"`);
+        
+        let targetTable = tableName;
+        if (isAllMode) {
+          targetTable = sheetTableMap[worksheet.name];
+        } else if (sheetTableMap[worksheet.name]) {
+          targetTable = sheetTableMap[worksheet.name];
         }
-      });
-    });
 
-    worksheet.eachRow({ includeEmpty: false }, (row, rowNumber) => {
-      if (rowNumber <= 2) return;
+        if (!targetTable) {
+          console.log(`⚠️  Skipping worksheet "${worksheet.name}" - no table mapping`);
+          continue;
+        }
 
-      const rowData = dbColumns.map(col => {
-        const excelIndex = headerMap[col];
-        return excelIndex ? getCellVal(row.getCell(excelIndex)) : null;
-      });
+        console.log(`  → Mapping to table: ${targetTable}`);
 
-      if (rowData[0] || rowData[1]) dataToInsert.push(rowData);
-    });
+        // Get actual columns from the target table
+        const actualTableColumns = await getTableColumns(targetTable);
+        console.log(`  → Target table has ${actualTableColumns.length} columns`);
 
-    if (dataToInsert.length === 0)
-      return res.status(400).json({ message: "No valid data rows found." });
+        // Filter dbColumns to only those that exist in the target table
+        const relevantColumns = dbColumns.filter(col => actualTableColumns.includes(col));
+        console.log(`  → Using ${relevantColumns.length} matching columns for insert`);
 
-    const query = `
-      INSERT INTO ${tableName} (${dbColumns.join(", ")})
+        const headerMap = {};
+        worksheet.getRow(1).eachCell((cell, colNumber) => {
+          const normalizedHeader = normalizeHeader(cell.value);
+          relevantColumns.forEach(dbCol => {
+            if (normalizedHeader === dbCol) {
+              headerMap[dbCol] = colNumber;
+            }
+          });
+        });
+        console.log(`  → Header map created with ${Object.keys(headerMap).length} matched columns`);
+
+        const dataToInsert = [];
+        worksheet.eachRow({ includeEmpty: false }, (row, rowNumber) => {
+          if (rowNumber <= 1) return;
+
+          const rowData = relevantColumns.map(col => {
+            const excelIndex = headerMap[col];
+            return excelIndex ? getCellVal(row.getCell(excelIndex)) : null;
+          });
+
+          const yearIndex = relevantColumns.indexOf('year');
+          if (yearIndex >= 0) {
+            const yearValue = rowData[yearIndex];
+            const yearStr = yearValue == null ? '' : String(yearValue).trim().toLowerCase();
+            if (!yearStr || yearStr === 'nan' || yearStr === 'none') {
+              rowData[yearIndex] = '2022-2023';
+            }
+          }
+
+          // Check if first non-null column or second column is populated (flexible row validation)
+          const hasData = rowData.some((val, idx) => val && idx < 5);
+          if (hasData) dataToInsert.push(rowData);
+        });
+
+        if (dataToInsert.length === 0) {
+          console.log(`  ⚠️  No valid data rows found`);
+          continue;
+        }
+
+        console.log(`  ✓ Extracted ${dataToInsert.length} data rows`);
+        totalDataRows += dataToInsert.length;
+
+      const query = `
+      INSERT INTO ${targetTable} (${relevantColumns.join(", ")})
       VALUES ?
       ON DUPLICATE KEY UPDATE
-        current_status = VALUES(current_status),
-        under_process_agency_reason = VALUES(under_process_agency_reason),
-        office_name = VALUES(office_name),
-        agency_type = VALUES(agency_type),
-        state = VALUES(state),
-        applicant_name = VALUES(applicant_name),
-        applicant_address = VALUES(applicant_address),
-        applicant_mobile_no = VALUES(applicant_mobile_no),
-        alternate_mobile_no = VALUES(alternate_mobile_no),
-        email = VALUES(email),
-        aadhar_no = VALUES(aadhar_no),
-        legal_status = VALUES(legal_status),
-        gender = VALUES(gender),
-        category = VALUES(category),
-        special_category = VALUES(special_category),
-        qualification = VALUES(qualification),
-        date_of_birth = VALUES(date_of_birth),
-        age = VALUES(age),
-        unit_location = VALUES(unit_location),
-        unit_address = VALUES(unit_address),
-        taluk_block = VALUES(taluk_block),
-        unit_district = VALUES(unit_district),
-        industry_type = VALUES(industry_type),
-        product_desc_activity = VALUES(product_desc_activity),
-        proposed_project_cost = VALUES(proposed_project_cost),
-        mm_involve = VALUES(mm_involve),
-        financing_branch_ifsc_code = VALUES(financing_branch_ifsc_code),
-        financing_branch_address = VALUES(financing_branch_address),
-        online_submission_date = VALUES(online_submission_date),
-        dltfec_meeting = VALUES(dltfec_meeting),
-        dltfec_meeting_place = VALUES(dltfec_meeting_place),
-        forwarding_date_to_bank = VALUES(forwarding_date_to_bank),
-        bank_remarks = VALUES(bank_remarks),
-        date_of_documents_receiveda_at_bank = VALUES(date_of_documents_receiveda_at_bank),
-        project_cost_approved_ce = VALUES(project_cost_approved_ce),
-        project_cost_approved_wc = VALUES(project_cost_approved_wc),
-        project_cost_approved_total = VALUES(project_cost_approved_total),
-        sanctioned_by_bank_date = VALUES(sanctioned_by_bank_date),
-        sanctioned_by_bank_ce = VALUES(sanctioned_by_bank_ce),
-        sanctioned_by_bank_wc = VALUES(sanctioned_by_bank_wc),
-        sanctioned_by_bank_total = VALUES(sanctioned_by_bank_total),
-        date_of_deposit_own_contribution = VALUES(date_of_deposit_own_contribution),
-        own_contribution_amount_deposited = VALUES(own_contribution_amount_deposited),
-        covered_under_cgtsi = VALUES(covered_under_cgtsi),
-        date_of_loan_release = VALUES(date_of_loan_release),
-        loan_release_amount = VALUES(loan_release_amount),
-        mm_claim_date = VALUES(mm_claim_date),
-        mm_claim_amount = VALUES(mm_claim_amount),
-        remarks_for_mm_process_at_pmegp_co_mumbai = VALUES(remarks_for_mm_process_at_pmegp_co_mumbai),
-        mm_release_date = VALUES(mm_release_date),
-        mm_release_amount = VALUES(mm_release_amount),
-        payment_status = VALUES(payment_status),
-        mm_disbursement_transaction_id = VALUES(mm_disbursement_transaction_id),
-        fail_reason = VALUES(fail_reason),
-        edp_training_center_name = VALUES(edp_training_center_name),
-        training_start_date = VALUES(training_start_date),
-        training_end_date = VALUES(training_end_date),
-        training_duration_days = VALUES(training_duration_days),
-        certificate_issue_date = VALUES(certificate_issue_date),
-        physical_verification_conducted_date = VALUES(physical_verification_conducted_date),
-        physical_verification_status = VALUES(physical_verification_status),
-        mm_final_adjustment_date = VALUES(mm_final_adjustment_date),
-        mm_final_adjustment_amount = VALUES(mm_final_adjustment_amount),
-        tdr_account_no = VALUES(tdr_account_no),
-        tdr_date = VALUES(tdr_date),
-        year = VALUES(year)
+        ${relevantColumns.slice(1).map(col => `${col} = VALUES(${col})`).join(",\n        ")}
     `;
 
-    const chunks = chunkArray(dataToInsert, 500);
-    let totalInserted = 0;
+        const chunks = chunkArray(dataToInsert, 500);
+        console.log(`  → Splitting ${dataToInsert.length} rows into ${chunks.length} batch(es)`);
+        
+        for (let i = 0; i < chunks.length; i++) {
+          const batch = chunks[i];
+          try {
+            console.log(`  → Batch ${i + 1}/${chunks.length}: inserting ${batch.length} rows...`);
+            const [result] = await db.query(query, [batch]);
+            totalInserted += result.affectedRows;
+            console.log(`    ✓ Batch ${i + 1} success: ${result.affectedRows} rows affected`);
+          } catch (batchErr) {
+            console.error(`  ✗ ERROR in batch ${i + 1}:`, batchErr.message);
+            throw batchErr; // propagate to outer catch
+          }
+        }
+        console.log(`  ✓ All batches completed for "${worksheet.name}"`);
+        
+      } catch (worksheetErr) {
+        console.error(`✗ ERROR processing worksheet "${worksheet.name}":`, worksheetErr.message);
+        throw worksheetErr; // propagate to outer catch
+      }
+    }
 
-    for (const batch of chunks) {
-      const [result] = await db.query(query, [batch]);
-      totalInserted += result.affectedRows;
+    if (totalDataRows === 0) {
+      return res.status(400).json({ message: "No valid data rows found on any processed sheet." });
     }
 
     return res.status(201).json({
-      message: `Uploaded successfully. Total ${totalInserted} rows processed.`,
+      message: `Uploaded successfully across ${worksheets.length} worksheets. ` +
+               `Total rows prepared ${totalDataRows}, inserted/updated ${totalInserted}.`,
     });
 
   } catch (error) {
-    console.error("Upload error:", error);
+    console.error("❌ UPLOAD ERROR:", error);
+    console.error("Stack:", error.stack);
 
     if (error.sqlMessage) {
       return res.status(500).json({ message: `Database error: ${error.sqlMessage}` });
     }
 
-    return res.status(500).json({ message: "Error processing file.", error: error.message });
+    return res.status(500).json({ 
+      message: "Error processing file.", 
+      error: error.message,
+      details: error.sqlMessage || error.stack 
+    });
   }
 };
 

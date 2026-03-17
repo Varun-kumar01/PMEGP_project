@@ -32,7 +32,8 @@
     <mat-form-field appearance="outline" style="width:260px; margin-top:4px;">
       <mat-label>Select Table</mat-label>
       <mat-select [(ngModel)]="selectedFieldTable">
-        <mat-option value="total_districts_data">agency_received</mat-option>
+        <mat-option value="ALL">All sheets (agency_received, agency_returned, ...)</mat-option>
+        <mat-option value="agency_received">agency_received</mat-option>
         <mat-option value="agency_returned">agency_returned</mat-option>
         <mat-option value="pending_at_agency">pending_at_agency</mat-option>
         <mat-option value="forwarded_to_bank">forwarded_to_bank</mat-option>
@@ -55,7 +56,7 @@
     </div>
   </mat-card-content>
   <mat-card-actions class="upload-actions">
-    <button mat-raised-button color="accent" [disabled]="!agencyFile || isUploadingAgency" (click)="uploadAgencyFile()">
+    <button mat-raised-button color="accent" [disabled]="!agencyFile || !selectedFieldTable || isUploadingAgency" (click)="uploadAgencyFile()">
       <span *ngIf="!isUploadingAgency">Upload Agency File</span>
       <span *ngIf="isUploadingAgency" class="uploading-spinner">
         <mat-progress-spinner mode="indeterminate" diameter="20"></mat-progress-spinner>
