@@ -329,7 +329,7 @@ export const getDistrictData = async (req, res) => {
 
       agencyReturned: "agency_returned",
 
-      Pending_At_Agency: "prnding_at_agency",
+      Pending_At_Agency: "pending_at_agency",
 
       Forwarded_to_Bank: "forwarded_to_bank",
 
@@ -339,11 +339,11 @@ export const getDistrictData = async (req, res) => {
 
       disbursementPrj: "mm_disbursement_no_of_proj",
 
+      bankReturned: "returned_by_bank",
+
       pendingBankPrj: "pending_at_bank_no_of_proj",
 
       pendingDisbursementPrj: "pending_for_mm_disbursement_no_of_proj",
-
-      physicalVerification: "physical_verification_data"
 
     };
 
@@ -502,7 +502,7 @@ export const getDateRange = async (req, res) => {
       SELECT 
         MIN(online_submission_date) as minDate,
         MAX(online_submission_date) as maxDate
-      FROM total_district_data
+      FROM agency_received
     `;
 
     const [results] = await db.query(query);

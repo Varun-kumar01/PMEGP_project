@@ -92,11 +92,7 @@ html, body {
 }
 
 
-.back-btn-fixed:hover, .back-btn-fixed:focus {
-  background: #111111 ;
-  box-shadow: 0 10px 32px rgba(220, 10, 45, 0.22);
-  transform: translateY(-2px) scale(1.03);
-}
+
 .back-arrow {
   width: 22px;
   height: 22px;
@@ -225,24 +221,17 @@ thead .sticky-col-2 {
   font-weight: bold;
 }
 
-.table-container a:hover {
-  background-color: #eef;
-}
-
 /* Clickable Table Cells */
 td.clickable {
   cursor: pointer;
-  transition: background-color 0.2s ease, color 0.2s ease;
+  color: #0066cc;
+  font-weight: 600;
 }
 
-td.clickable:hover {
-  background-color: #e3f2fd;
-  color: #1565c0;
-  font-weight: 500;
-}
-
-td.clickable:active {
-  background-color: #bbdefb;
+/* District names - no blue color */
+td.sticky-col-2.clickable {
+  color: #000;
+  font-weight: 400;
 }
 
 .no-data {

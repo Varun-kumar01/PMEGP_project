@@ -153,7 +153,7 @@ export const getTotalDistrictData = async (req, res) => {
         unit_address,
         taluk_block,
         unit_district
-      FROM total_district_data
+      FROM agency_received
       WHERE UPPER(TRIM(unit_district)) = UPPER(TRIM(?))
     `;
 

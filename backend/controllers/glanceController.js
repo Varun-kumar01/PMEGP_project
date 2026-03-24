@@ -23,17 +23,36 @@ import db from '../config/db.js';
 
 // Map glance titles to database column names
 const glanceTitleMap = {
-  'No. of Applications Registered': 'total_applications',
+  'No. of Applications Registered': 'agencyReceived', // ✅ correct column
+
   'No. of Applications Forwarded to Bank': 'Forwarded_to_Bank',
-  'Sanctioned by Bank': { projects: 'sanctionedPrj', lakh: 'sanctionedLakh' },
-  'Claim by Bank': { projects: 'claimedPrj', lakh: 'claimedLakh' },
-  'Disbursement by KVIC': { projects: 'disbursementPrj', lakh: 'disbursementLakh' },
-  'Pendency at Bank': { projects: 'pendingBankPrj', lakh: 'pendingBankLakh' },
+
+  'Sanctioned by Bank': {
+    projects: 'sanctionedPrj',
+    lakh: 'sanctionedLakh'
+  },
+
+  'Claim by Bank': {
+    projects: 'claimedPrj',
+    lakh: 'claimedLakh'
+  },
+
+  'Disbursement by KVIC': {
+    projects: 'disbursementPrj',
+    lakh: 'disbursementLakh'
+  },
+
+  'Pendency at Bank': {
+    projects: 'pendingBankPrj',
+    lakh: 'pendingBankLakh'
+  },
+
   'Rejected by Bank': 'bankReturned',
-  'Pendency at DCO': 'dco_pending',
-  'Pending at KVIC': 'kvic_pending',
-  'Referred by KVIC': { projects: 'pendingDisbursementPrj', lakh: 'pendingDisbursementLakh' },
-  'Target (Phy & Fin)': 'target'
+
+  'Referred by KVIC': {
+    projects: 'pendingDisbursementPrj',
+    lakh: 'pendingDisbursementLakh'
+  }
 };
 
 export const getGlanceData = async (req, res) => {
