@@ -224,7 +224,7 @@ thead .sticky-col-2 {
 /* Clickable Table Cells */
 td.clickable {
   cursor: pointer;
-  color: #0066cc;
+  color: #0027f3;
   font-weight: 600;
 }
 
@@ -250,4 +250,10 @@ td.sticky-col-2.clickable {
 
 .total-row td {
   color: #000;
+}
+
+/* Clickable cells in total row - dark blue color */
+.total-row td.clickable {
+  color: #0027f3;
+  font-weight: 600;
 }

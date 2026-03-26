@@ -520,3 +520,60 @@ export const getDateRange = async (req, res) => {
     return res.status(500).json({ message: "Database error" });
   }
 };
+
+// Fetch aggregated data for all districts (TOTAL row functionality)
+export const getTotalRowData = async (req, res) => {
+  const { year, columnKey } = req.query;
+
+  try {
+    // Map dashboard column → database table
+    const tableMap = {
+      agencyReceived: "agency_received",
+      agencyReturned: "agency_returned",
+      Pending_At_Agency: "pending_at_agency",
+      Forwarded_to_Bank: "forwarded_to_bank",
+      sanctionedPrj: "sanctioned_by_bank_no_of_proj",
+      claimedPrj: "mm_claimed_no_of_proj",
+      disbursementPrj: "mm_disbursement_no_of_proj",
+      bankReturned: "returned_by_bank",
+      pendingBankPrj: "pending_at_bank_no_of_proj",
+      pendingDisbursementPrj: "pending_for_mm_disbursement_no_of_proj",
+    };
+
+    // Get table name from columnKey
+    const targetTable = tableMap[columnKey];
+
+    if (!targetTable) {
+      return res.status(400).json({
+        message: `Invalid columnKey: ${columnKey}`
+      });
+    }
+
+    // Build query - fetch all districts data (no district filter for TOTAL row)
+    let query = `
+      SELECT *
+      FROM ${targetTable}
+    `;
+
+    const params = [];
+
+    if (year) {
+      query += ` WHERE year = ?`;
+      params.push(year);
+    }
+
+    query += ` ORDER BY applicant_id ASC`;
+
+    const [rows] = await db.query(query, params);
+
+    res.json(rows);
+
+  } catch (error) {
+    console.error("Total Row Data Fetch Error:", error.message);
+
+    res.status(500).json({
+      message: "Database error fetching total row data",
+      error: error.message
+    });
+  }
+};

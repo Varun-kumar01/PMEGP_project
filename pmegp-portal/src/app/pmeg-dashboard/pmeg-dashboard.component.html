@@ -97,21 +97,21 @@
         <td class="sticky-col sticky-col-1"></td>
         <td class="sticky-col sticky-col-2"><b>TOTAL</b></td>
 
-        <td>{{ totals.agencyReceived }}</td>
-        <td>{{ totals.agencyReturned }}</td>
-        <td>{{ totals.Pending_At_Agency }}</td>
-        <td>{{ totals.Forwarded_to_Bank }}</td>
-        <td>{{ totals.sanctionedPrj }}</td>
+        <td class="clickable" (click)="onTotalRowClick($event, 'agencyReceived')">{{ totals.agencyReceived }}</td>
+        <td class="clickable" (click)="onTotalRowClick($event, 'agencyReturned')">{{ totals.agencyReturned }}</td>
+        <td class="clickable" (click)="onTotalRowClick($event, 'Pending_At_Agency')">{{ totals.Pending_At_Agency }}</td>
+        <td class="clickable" (click)="onTotalRowClick($event, 'Forwarded_to_Bank')">{{ totals.Forwarded_to_Bank }}</td>
+        <td class="clickable" (click)="onTotalRowClick($event, 'sanctionedPrj')">{{ totals.sanctionedPrj }}</td>
         <td>{{ totals.sanctionedLakh | number:'1.0-3'  }}</td>
-        <td>{{ totals.claimedPrj }}</td>
-        <td>{{ totals.claimedLakh }}</td>
-        <td>{{ totals.disbursementPrj }}</td>
-        <td>{{ totals.disbursementLakh }}</td>
-        <td>{{ totals.bankReturned }}</td>
-        <td>{{ totals.pendingBankPrj }}</td>
+        <td class="clickable" (click)="onTotalRowClick($event, 'claimedPrj')">{{ totals.claimedPrj }}</td>
+        <td>{{ totals.claimedLakh | number:'1.0-3'  }}</td>
+        <td class="clickable" (click)="onTotalRowClick($event, 'disbursementPrj')">{{ totals.disbursementPrj }}</td>
+        <td>{{ totals.disbursementLakh | number:'1.0-3'  }}</td>
+        <td class="clickable" (click)="onTotalRowClick($event, 'bankReturned')">{{ totals.bankReturned }}</td>
+        <td class="clickable" (click)="onTotalRowClick($event, 'pendingBankPrj')">{{ totals.pendingBankPrj }}</td>
         <td>{{ totals.pendingBankLakh | number:'1.0-3'  }}</td>
-        <td>{{ totals.pendingDisbursementPrj }}</td>
-        <td>{{ totals.pendingDisbursementLakh }}</td>
+        <td class="clickable" (click)="onTotalRowClick($event, 'pendingDisbursementPrj')">{{ totals.pendingDisbursementPrj }}</td>
+        <td>{{ totals.pendingDisbursementLakh | number:'1.0-3'  }}</td>
 
       </tr>
 

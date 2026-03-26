@@ -143,5 +143,18 @@ export class PmegDashboardComponent implements OnInit {
     }); 
   }
 
+  // Click handler for Total Row - fetch all district data for that year and column
+  onTotalRowClick(event: Event, columnKey: string) {
+    event.preventDefault();
+    
+    // Navigate with special "TOTAL" marker to indicate all districts data
+    this.router.navigate(['/details', 'TOTAL'], {
+      queryParams: {
+        year: this.selectedYear,
+        columnKey: columnKey
+      }
+    });
+  }
+
 }
 

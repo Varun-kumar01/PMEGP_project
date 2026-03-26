@@ -47,7 +47,13 @@ export class SecondTableComponent implements OnInit {
     this.isLoading = true;
     this.errorMessage = null;
     
-    // Build API URL with query parameters
+    // Check if this is a TOTAL row request
+    if (districtName === 'TOTAL') {
+      this.fetchTotalRowData(year, columnKey);
+      return;
+    }
+
+    // Build API URL with query parameters for regular district data
     let apiUrl = `${environment.apiUrl}/pmeg-data/data/${districtName}`;
     const queryParams = [];
     
@@ -73,6 +79,40 @@ export class SecondTableComponent implements OnInit {
       },
       error: (err) => {
         console.error('Error fetching data:', err);
+        this.errorMessage = `Error: ${err.error?.message || 'Could not load data.'}`;
+        this.isLoading = false;
+        this.secondTableData = [];
+      },
+    });
+  }
+
+  // Fetch aggregated data for all districts (TOTAL row functionality)
+  fetchTotalRowData(year?: string | null, columnKey?: string | null): void {
+    let apiUrl = `${environment.apiUrl}/pmeg-data/total-row-data`;
+    const queryParams = [];
+    
+    if (year) {
+      queryParams.push(`year=${year}`);
+    }
+    if (columnKey) {
+      queryParams.push(`columnKey=${columnKey}`);
+    }
+    
+    if (queryParams.length > 0) {
+      apiUrl += '?' + queryParams.join('&');
+    }
+
+    this.http.get<any[]>(apiUrl).subscribe({
+      next: (data) => {
+        console.log('Fetched total row data:', data);
+        this.secondTableData = data;
+        this.isLoading = false;
+        if (data.length === 0) {
+          this.errorMessage = 'No data found for the selected year and column.';
+        }
+      },
+      error: (err) => {
+        console.error('Error fetching total row data:', err);
         this.errorMessage = `Error: ${err.error?.message || 'Could not load data.'}`;
         this.isLoading = false;
         this.secondTableData = [];

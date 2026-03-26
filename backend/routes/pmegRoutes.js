@@ -8,7 +8,8 @@ import {
   uploadAgencyDetailData,
   getDistrictData,          
   uploadKvibData,
-  getDateRange
+  getDateRange,
+  getTotalRowData
 } from "../controllers/pmegController.js";
 
 const router = express.Router();
@@ -23,6 +24,8 @@ router.get("/", getPmegData);
 router.get("/year/:year", getPmegDataByYear);
 
 router.get("/date-range", getDateRange);
+
+router.get("/total-row-data", getTotalRowData);
 
 router.post("/upload", upload.single("mainExcel"), uploadPmegData);
 
