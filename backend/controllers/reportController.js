@@ -1,22 +1,25 @@
+// controllers/reportController.js
+import pool from '../config/db.js'; // adjust path to your mysql2 pool export
 
-import pool from '../config/db.js'; 
-
-
+/**
+ * GET /api/report/verification/full-report?district=...&mandal=...
+ * returns merged rows
+ */
 export const getFullVerificationReport = async (req, res) => {
   try {
     const { district, mandal } = req.query;
     if (!district) {
-      return res.status(400).json({ success: false, message: 'district required' });
+      return res.status(400).json({ success: false, message: 'district is required' });
     }
 
-    let sql = `
+    const sql = `
       SELECT
-        t.applicant_id,
-        t.applicant_name,
-        t.product_desc_activity,
-        t.unit_address,
-        t.taluk_block AS mandal,
-        t.unit_district AS district,
+        a.applicant_id,
+        a.applicant_name,
+        a.mandal,
+        a.district,
+        a.product_desc_activity,
+        a.unit_address,
         a.working_status,
         a.not_working_status,
         a.shifted_status,
@@ -29,39 +32,28 @@ export const getFullVerificationReport = async (req, res) => {
         w.annual_production_qty,
         w.annual_production_value,
         w.annual_turnover,
-        w.latitude AS working_latitude,
-        w.longitude AS working_longitude,
         w.photo_paths AS working_photos,
         -- not working
         nw.remarks AS not_working_remarks,
-        nw.latitude AS not_working_latitude,
-        nw.longitude AS not_working_longitude,
         nw.photo_paths AS not_working_photos,
         -- shifted
-        s.new_address AS shifted_new_address,
-        s.latitude AS shifted_latitude,
-        s.longitude AS shifted_longitude,
-        s.photo_paths AS shifted_photos
-      FROM total_district_data t
-      LEFT JOIN applicant_verifications a ON t.applicant_id = a.applicant_id
-      LEFT JOIN verification_working_details w ON t.applicant_id = w.applicant_id
-      LEFT JOIN verification_not_working_details nw ON t.applicant_id = nw.applicant_id
-      LEFT JOIN verification_shifted_details s ON t.applicant_id = s.applicant_id
-      WHERE UPPER(TRIM(t.unit_district)) = UPPER(TRIM(?))
+        s.new_address AS shifted_new_address
+      FROM applicant_verifications a
+      LEFT JOIN verification_working_details w ON a.applicant_id = w.applicant_id
+      LEFT JOIN verification_not_working_details nw ON a.applicant_id = nw.applicant_id
+      LEFT JOIN verification_shifted_details s ON a.applicant_id = s.applicant_id
+      WHERE a.district = ?
+      ${mandal ? 'AND a.mandal LIKE ?' : ''}
+      ORDER BY a.applicant_name ASC
     `;
 
     const params = [district];
-
-    // Add mandal filter if provided
-    if (mandal && mandal.trim() !== '') {
-      sql += ` AND UPPER(t.taluk_block) LIKE CONCAT('%', UPPER(?), '%')`;
-      params.push(mandal);
+    if (mandal) {
+      params.push(`%${mandal}%`);
     }
-
-    sql += ` ORDER BY t.applicant_name ASC`;
-
     const [rows] = await pool.execute(sql, params);
 
+    // rows might contain photo_paths as JSON strings - send as-is; client will normalize
     return res.json({ success: true, data: rows });
   } catch (err) {
     console.error('getFullVerificationReport error', err);

@@ -114,8 +114,8 @@ export class ReportComponent implements OnInit {
   onMandalSearch() {
     if (!this.selectedDistrictName) return;
 
-    // optional: wait until user types 2 chars
-    if (this.selectedMandal && this.selectedMandal.length < 2) return;
+    // Trigger search when mandal is empty (reset) or user has typed at least 3 chars
+    if (this.selectedMandal && this.selectedMandal.length < 3) return;
 
     this.loadReport();
   }
